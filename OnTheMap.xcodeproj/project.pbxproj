@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BD4164BE1BF549C700A8C6E0 /* StudentsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4164BD1BF549C700A8C6E0 /* StudentsTableViewController.swift */; };
 		BD4A9FCF1BF28F27004E6C15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4A9FCE1BF28F27004E6C15 /* AppDelegate.swift */; };
 		BD4A9FD41BF28F27004E6C15 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD4A9FD21BF28F27004E6C15 /* Main.storyboard */; };
 		BD4A9FD61BF28F27004E6C15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD4A9FD51BF28F27004E6C15 /* Assets.xcassets */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BD4164BD1BF549C700A8C6E0 /* StudentsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentsTableViewController.swift; sourceTree = "<group>"; };
 		BD4A9FCB1BF28F27004E6C15 /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD4A9FCE1BF28F27004E6C15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BD4A9FD31BF28F27004E6C15 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -90,6 +92,7 @@
 			children = (
 				BD4A9FE21BF29EA1004E6C15 /* LoginViewController.swift */,
 				BD4A9FE41BF2ACF0004E6C15 /* MapViewController.swift */,
+				BD4164BD1BF549C700A8C6E0 /* StudentsTableViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -189,6 +192,7 @@
 				BD788E911BF50D1A00736340 /* ParseProvider.swift in Sources */,
 				BD5BC3311BF3D22500D08255 /* UdacityProvider.swift in Sources */,
 				BD4A9FCF1BF28F27004E6C15 /* AppDelegate.swift in Sources */,
+				BD4164BE1BF549C700A8C6E0 /* StudentsTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

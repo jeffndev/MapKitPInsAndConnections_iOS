@@ -16,9 +16,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mainMap: MKMapView!
     
     override func viewDidLoad() {
-        ParseProvider.fetchStudentLocations() { (success, errMsg) in
+        super.viewDidLoad()
+        loadLocations(false)
+    }
+    
+    func loadLocations(doRefresh: Bool) {
+        ParseProvider.fetchStudentLocations(doRefresh) { (success, errMsg) in
             if success == true {
-                dispatch_async(dispatch_get_main_queue(), { self.addMapPins() } )
+                dispatch_async(dispatch_get_main_queue(), { self.addMapPins(doRefresh) } )
             } else {
                 //TODO: error logging and feedback structure...
                 print(errMsg!)
@@ -26,11 +31,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func addMapPins() {
+    func addMapPins(doRefresh: Bool) {
         let locations = ParseProvider.getSharedStudentLocations()
         
         var annotations = [MKPointAnnotation]()
-
+        //first remove all annotations, if this is a data refresh
+        if doRefresh == true {
+            self.mainMap.removeAnnotations(self.mainMap.annotations)
+        }
         for l in locations {
             let lat = CLLocationDegrees(l.latitude)
             let long = CLLocationDegrees(l.longitude)
@@ -45,5 +53,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             annotations.append(annotation)
         }
         self.mainMap.addAnnotations(annotations)
+    }
+    
+    @IBAction func refreshDataAction(sender: UIBarButtonItem) {
+    }
+    
+    @IBAction func addNewPinAction(sender: UIBarButtonItem) {
     }
 }

@@ -217,8 +217,16 @@
                     <navigationItem key="navigationItem" title="On The Map" id="r97-35-ReM">
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="7hb-aw-gEb"/>
                         <rightBarButtonItems>
-                            <barButtonItem systemItem="refresh" id="AE4-Jn-Osk"/>
-                            <barButtonItem image="pin" id="14o-1V-JQa"/>
+                            <barButtonItem systemItem="refresh" id="AE4-Jn-Osk">
+                                <connections>
+                                    <action selector="refreshDataAction:" destination="uDL-ec-AHP" id="6QA-MS-SNN"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="pin" id="14o-1V-JQa">
+                                <connections>
+                                    <action selector="addNewPinAction:" destination="uDL-ec-AHP" id="QgH-3c-mCV"/>
+                                </connections>
+                            </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
@@ -232,7 +240,7 @@
         <!--On The Map-->
         <scene sceneID="cxt-un-QbN">
             <objects>
-                <viewController id="MaN-RR-l5e" sceneMemberID="viewController">
+                <viewController id="MaN-RR-l5e" customClass="StudentsTableViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ht8-Uv-GVm"/>
                         <viewControllerLayoutGuide type="bottom" id="FBM-uP-Fnx"/>
@@ -272,6 +280,10 @@
                                         <animations/>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="MaN-RR-l5e" id="ZrA-fT-5OT"/>
+                                    <outlet property="delegate" destination="MaN-RR-l5e" id="FRm-kk-alx"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <animations/>
@@ -286,10 +298,21 @@
                     <navigationItem key="navigationItem" title="On The Map" id="h8t-sG-cz8">
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="NPh-LJ-T2G"/>
                         <rightBarButtonItems>
-                            <barButtonItem systemItem="refresh" id="PNX-bc-eTs"/>
-                            <barButtonItem image="pin" id="UlD-6v-vw1"/>
+                            <barButtonItem systemItem="refresh" id="PNX-bc-eTs">
+                                <connections>
+                                    <action selector="refreshDataAction:" destination="MaN-RR-l5e" id="0H0-Yi-5jo"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="pin" id="UlD-6v-vw1">
+                                <connections>
+                                    <action selector="addNewPinAction:" destination="MaN-RR-l5e" id="nqs-9t-jqg"/>
+                                </connections>
+                            </barButtonItem>
                         </rightBarButtonItems>
                     </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="dZJ-iG-dam" id="gAg-21-CwH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kGz-pZ-neU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
