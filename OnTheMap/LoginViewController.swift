@@ -10,6 +10,7 @@ import UIKit
 
 class LoginViewController: UIViewController {
     
+    @IBOutlet weak var facebookLoginButton: UIButton!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
@@ -21,7 +22,8 @@ class LoginViewController: UIViewController {
         passwordTextField.leftView = UIView(frame: leftSpacerFrame)
         passwordTextField.leftViewMode = .Always
         
-        
+        //TODO: use imageEdgeInset and titleEdgeInset on the facebookLoginButton to add the facebook logo to the right side
+        //
     }
     
     @IBAction func udacitySignUpAction(sender: UIButton) {
@@ -48,8 +50,10 @@ class LoginViewController: UIViewController {
     }
     */
     @IBAction func loginAction(sender: UIButton) {
+        let LOGIN_SESSION_METHOD = "session"
         
-        let requestString = "https://www.udacity.com/api/" + "session"
+        let requestString = UdacityProvider.BASE_API_URL_STRING + LOGIN_SESSION_METHOD
+        print(requestString)
         guard let requestUrl = NSURL(string: requestString) else {
             //TODO: implement log and user feedback mechanism
             return
@@ -69,11 +73,12 @@ class LoginViewController: UIViewController {
                 //print("There was an error with your request: \(error)")
                 return
             }
-            
+            //TODO: think about how to handle 403 errors...could indicate to user that their credentials not recognized..
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if let response = response as? NSHTTPURLResponse {
                     //TODO: implement log and user feedback mechanism
                     //print("Your request returned an invalid response! Status code: \(response.statusCode)!")
+                    //TODO: LET USER KNOW if there is a 403 response, indicating probable bad credentials entered..
                 } else if let response = response {
                     //TODO: implement log and user feedback mechanism
                     //print("Your request returned an invalid response! Response: \(response)!")

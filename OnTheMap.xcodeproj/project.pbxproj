@@ -14,6 +14,9 @@
 		BD4A9FE31BF29EA1004E6C15 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4A9FE21BF29EA1004E6C15 /* LoginViewController.swift */; };
 		BD4A9FE51BF2ACF0004E6C15 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4A9FE41BF2ACF0004E6C15 /* MapViewController.swift */; };
 		BD5BC3311BF3D22500D08255 /* UdacityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5BC3301BF3D22500D08255 /* UdacityProvider.swift */; };
+		BD788E911BF50D1A00736340 /* ParseProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E901BF50D1A00736340 /* ParseProvider.swift */; };
+		BD788E931BF50DA900736340 /* StudentLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E921BF50DA900736340 /* StudentLocation.swift */; };
+		BD788E961BF512C400736340 /* RESTApiHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E951BF512C400736340 /* RESTApiHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +29,9 @@
 		BD4A9FE21BF29EA1004E6C15 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		BD4A9FE41BF2ACF0004E6C15 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		BD5BC3301BF3D22500D08255 /* UdacityProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityProvider.swift; sourceTree = "<group>"; };
+		BD788E901BF50D1A00736340 /* ParseProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseProvider.swift; sourceTree = "<group>"; };
+		BD788E921BF50DA900736340 /* StudentLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentLocation.swift; sourceTree = "<group>"; };
+		BD788E951BF512C400736340 /* RESTApiHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTApiHelpers.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				BD4A9FCE1BF28F27004E6C15 /* AppDelegate.swift */,
+				BD788E941BF5128E00736340 /* Utils */,
 				BD4A9FE01BF29E5A004E6C15 /* Models */,
 				BD5BC32F1BF3C68100D08255 /* DataProviders */,
 				BD4A9FE11BF29E6E004E6C15 /* ViewControllers */,
@@ -73,6 +80,7 @@
 		BD4A9FE01BF29E5A004E6C15 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				BD788E921BF50DA900736340 /* StudentLocation.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -90,8 +98,17 @@
 			isa = PBXGroup;
 			children = (
 				BD5BC3301BF3D22500D08255 /* UdacityProvider.swift */,
+				BD788E901BF50D1A00736340 /* ParseProvider.swift */,
 			);
 			name = DataProviders;
+			sourceTree = "<group>";
+		};
+		BD788E941BF5128E00736340 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				BD788E951BF512C400736340 /* RESTApiHelpers.swift */,
+			);
+			name = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -165,8 +182,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD788E931BF50DA900736340 /* StudentLocation.swift in Sources */,
+				BD788E961BF512C400736340 /* RESTApiHelpers.swift in Sources */,
 				BD4A9FE31BF29EA1004E6C15 /* LoginViewController.swift in Sources */,
 				BD4A9FE51BF2ACF0004E6C15 /* MapViewController.swift in Sources */,
+				BD788E911BF50D1A00736340 /* ParseProvider.swift in Sources */,
 				BD5BC3311BF3D22500D08255 /* UdacityProvider.swift in Sources */,
 				BD4A9FCF1BF28F27004E6C15 /* AppDelegate.swift in Sources */,
 			);

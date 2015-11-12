@@ -139,6 +139,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="emailTextField" destination="whN-Xi-fsh" id="m2J-2W-3ri"/>
+                        <outlet property="facebookLoginButton" destination="QVi-Xi-iVv" id="JA2-Ja-Ybv"/>
                         <outlet property="passwordTextField" destination="OCu-kb-LuT" id="Um8-Wi-a76"/>
                     </connections>
                 </viewController>
