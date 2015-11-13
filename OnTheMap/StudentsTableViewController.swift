@@ -8,50 +8,53 @@
 
 import UIKit
 
-class StudentsTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class StudentsTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, DataObserver {
     
     let CELL_ID = "StudentCell"
     
-    var locations: [StudentLocation]!
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadLocations(false)
-    }
-    
-    func loadLocations(doRefresh: Bool) {
-        locations = ParseProvider.getSharedStudentLocations()
-        ParseProvider.fetchStudentLocations(doRefresh) { (success, errMsg) in
-            if success == true {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.locations = ParseProvider.getSharedStudentLocations()
-                    self.tableView.reloadData()
-                }
-            } else {
-                //TODO: err reporting?? user feedback
-                print(errMsg)
-            }
+        StudentLocations.sharedInstance.registerObserver(self)
+        if StudentLocations.sharedInstance.isPopulated() {
+            tableView.reloadData()
+        } else {
+            StudentLocations.sharedInstance.fetchLocations()
         }
     }
     
     
+    
     @IBAction func addNewPinAction(sender: UIBarButtonItem) {
-        //TODO:
+        //TODO: just present the new view controller modally on this..
     }
     
     @IBAction func refreshDataAction(sender: UIBarButtonItem) {
-        loadLocations(true)
+        print("refresh...from TableView..")
+        StudentLocations.sharedInstance.fetchLocations()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CELL_ID)!
-        cell.textLabel?.text = "\(locations![indexPath.row].firstName) \(locations![indexPath.row].lastName)"
+        let locations = StudentLocations.sharedInstance.locations()
+        cell.textLabel?.text = "\(locations[indexPath.row].firstName) \(locations[indexPath.row].lastName)"
         return cell
     }
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return ParseProvider.getSharedStudentLocations().count
+        return StudentLocations.sharedInstance.locations().count
     }
     
+    //DATA OBSERVER
+    func refresh() {
+        dispatch_async(dispatch_get_main_queue(), {
+            self.tableView.reloadData()
+        })
+    }
+    func add(newItem: AnyObject, indexPath: NSIndexPath) {
+        if let _ = newItem as? StudentLocation {
+            tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        }
+    }
 }

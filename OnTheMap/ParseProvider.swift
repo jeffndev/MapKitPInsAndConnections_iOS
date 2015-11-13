@@ -9,13 +9,13 @@
 import Foundation
 
 class ParseProvider {
-    static let APPLICATION_ID = "QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr"
-    static let API_KEY = "QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY"
-    static let BASE_API_URL_STRING = "https://api.parse.com/1/classes/"
+    let APPLICATION_ID = "QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr"
+    let API_KEY = "QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY"
+    let BASE_API_URL_STRING = "https://api.parse.com/1/classes/"
     
-    private static var locations = [StudentLocation]()
+    var locations = [StudentLocation]()
     
-    static func getSharedStudentLocations() -> [StudentLocation] { return locations }
+    //func getSharedStudentLocations() -> [StudentLocation] { return locations }
     /*
     "results":[
     {
@@ -44,7 +44,7 @@ class ParseProvider {
     },
     */
 
-    static func fetchStudentLocations(doRefresh: Bool = false, limitNumRecords: Int = 100, completion: (success: Bool, errorMessage: String?)-> Void) {
+    func fetchStudentLocations(doRefresh: Bool = false, limitNumRecords: Int = 100, completion: (success: Bool, errorMessage: String?)-> Void) {
         if locations.count > 0 && doRefresh == false {
             completion(success: true, errorMessage: nil)
             return
@@ -52,7 +52,7 @@ class ParseProvider {
             //let FETCH_LIMIT = 100
             let GET_STUDENT_LOCATIONS_METHOD = "StudentLocation"
             let restParams = ["limit": limitNumRecords]
-            let requestString: String = ParseProvider.BASE_API_URL_STRING + GET_STUDENT_LOCATIONS_METHOD + RESTApiHelpers.assembleRestParamaters(restParams)
+            let requestString: String = BASE_API_URL_STRING + GET_STUDENT_LOCATIONS_METHOD + RESTApiHelpers.assembleRestParamaters(restParams)
             print(requestString)
             guard let requestUrl = NSURL(string: requestString) else {
                 //TODO: implement log and user feedback mechanism
@@ -62,8 +62,8 @@ class ParseProvider {
             }
             let request = NSMutableURLRequest(URL: requestUrl)
             request.HTTPMethod = "GET"
-            request.addValue(ParseProvider.APPLICATION_ID, forHTTPHeaderField: "X-Parse-Application-Id")
-            request.addValue(ParseProvider.API_KEY, forHTTPHeaderField: "X-Parse-REST-API-Key")
+            request.addValue(APPLICATION_ID, forHTTPHeaderField: "X-Parse-Application-Id")
+            request.addValue(API_KEY, forHTTPHeaderField: "X-Parse-REST-API-Key")
             let session = NSURLSession.sharedSession()
             let task = session.dataTaskWithRequest(request) { (data, response, error) in
                 guard (error == nil) else {
@@ -110,7 +110,7 @@ class ParseProvider {
                 
                 for loc in locationObjects {
                     if let objLocation = StudentLocation.fromJSON(loc) {
-                        locations.append(objLocation)
+                        self.locations.append(objLocation)
                     }
                 }
                 print("Locations count: \(self.locations.count)")

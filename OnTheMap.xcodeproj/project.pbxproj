@@ -18,6 +18,8 @@
 		BD788E911BF50D1A00736340 /* ParseProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E901BF50D1A00736340 /* ParseProvider.swift */; };
 		BD788E931BF50DA900736340 /* StudentLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E921BF50DA900736340 /* StudentLocation.swift */; };
 		BD788E961BF512C400736340 /* RESTApiHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E951BF512C400736340 /* RESTApiHelpers.swift */; };
+		BDF5CCD11BF655FC000D443F /* DataObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF5CCD01BF655FC000D443F /* DataObserver.swift */; };
+		BDF5CCD31BF65660000D443F /* StudentLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF5CCD21BF65660000D443F /* StudentLocations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 		BD788E901BF50D1A00736340 /* ParseProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseProvider.swift; sourceTree = "<group>"; };
 		BD788E921BF50DA900736340 /* StudentLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentLocation.swift; sourceTree = "<group>"; };
 		BD788E951BF512C400736340 /* RESTApiHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTApiHelpers.swift; sourceTree = "<group>"; };
+		BDF5CCD01BF655FC000D443F /* DataObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataObserver.swift; sourceTree = "<group>"; };
+		BDF5CCD21BF65660000D443F /* StudentLocations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentLocations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,7 @@
 			isa = PBXGroup;
 			children = (
 				BD4A9FCE1BF28F27004E6C15 /* AppDelegate.swift */,
+				BDF5CCCF1BF655DC000D443F /* Protocols */,
 				BD788E941BF5128E00736340 /* Utils */,
 				BD4A9FE01BF29E5A004E6C15 /* Models */,
 				BD5BC32F1BF3C68100D08255 /* DataProviders */,
@@ -83,6 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				BD788E921BF50DA900736340 /* StudentLocation.swift */,
+				BDF5CCD21BF65660000D443F /* StudentLocations.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -112,6 +118,14 @@
 				BD788E951BF512C400736340 /* RESTApiHelpers.swift */,
 			);
 			name = Utils;
+			sourceTree = "<group>";
+		};
+		BDF5CCCF1BF655DC000D443F /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				BDF5CCD01BF655FC000D443F /* DataObserver.swift */,
+			);
+			name = Protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -185,8 +199,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BDF5CCD31BF65660000D443F /* StudentLocations.swift in Sources */,
 				BD788E931BF50DA900736340 /* StudentLocation.swift in Sources */,
 				BD788E961BF512C400736340 /* RESTApiHelpers.swift in Sources */,
+				BDF5CCD11BF655FC000D443F /* DataObserver.swift in Sources */,
 				BD4A9FE31BF29EA1004E6C15 /* LoginViewController.swift in Sources */,
 				BD4A9FE51BF2ACF0004E6C15 /* MapViewController.swift in Sources */,
 				BD788E911BF50D1A00736340 /* ParseProvider.swift in Sources */,

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
@@ -185,10 +185,10 @@
             </objects>
             <point key="canvasLocation" x="1502.5" y="154.5"/>
         </scene>
-        <!--On The Map-->
+        <!--Map View -->
         <scene sceneID="5XN-vF-as6">
             <objects>
-                <viewController id="uDL-ec-AHP" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Map View " id="uDL-ec-AHP" customClass="MapViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="4wZ-50-NBL"/>
                         <viewControllerLayoutGuide type="bottom" id="mby-z2-x1R"/>
@@ -237,10 +237,10 @@
             </objects>
             <point key="canvasLocation" x="1994.5" y="154.5"/>
         </scene>
-        <!--On The Map-->
+        <!--Table View-->
         <scene sceneID="cxt-un-QbN">
             <objects>
-                <viewController id="MaN-RR-l5e" customClass="StudentsTableViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Table View" id="MaN-RR-l5e" customClass="StudentsTableViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ht8-Uv-GVm"/>
                         <viewControllerLayoutGuide type="bottom" id="FBM-uP-Fnx"/>

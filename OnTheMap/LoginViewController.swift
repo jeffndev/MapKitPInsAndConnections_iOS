@@ -38,16 +38,18 @@ class LoginViewController: UIViewController {
     
     
     @IBAction func loginAction(sender: UIButton) {
+        var oldPlaceholder = emailTextField!.placeholder
         guard let emailText = emailTextField!.text where emailText.characters.count > 0 else {
-            //TODO: notify that need to enter email!
+            emailTextField.placeholder = "Please Enter Your Email!"
             return
         }
-        
-        
+        emailTextField.placeholder = oldPlaceholder
+        oldPlaceholder = passwordTextField.placeholder
         guard let passwordText = passwordTextField!.text where passwordText.characters.count > 0 else {
-            //TODO: notify that need to enter password
+            passwordTextField.placeholder = "Please Enter Your Password!"
             return
         }
+        passwordTextField.placeholder = oldPlaceholder
         
         UdacityProvider.loginAction(emailText, password: passwordText) { (success, errMsg) in
             if success == true {

@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class MapViewController: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
     
     
     
@@ -17,28 +17,21 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadLocations(false)
-    }
-    
-    func loadLocations(doRefresh: Bool) {
-        ParseProvider.fetchStudentLocations(doRefresh) { (success, errMsg) in
-            if success == true {
-                dispatch_async(dispatch_get_main_queue(), { self.addMapPins(doRefresh) } )
-            } else {
-                //TODO: error logging and feedback structure...
-                print(errMsg!)
-            }
+        StudentLocations.sharedInstance.registerObserver(self)
+        if StudentLocations.sharedInstance.isPopulated() {
+            loadPins()
+        } else {
+            StudentLocations.sharedInstance.fetchLocations()
         }
     }
     
-    func addMapPins(doRefresh: Bool) {
-        let locations = ParseProvider.getSharedStudentLocations()
+    func loadPins() {
+        let locations = StudentLocations.sharedInstance.locations()
         
         var annotations = [MKPointAnnotation]()
-        //first remove all annotations, if this is a data refresh
-        if doRefresh == true {
-            self.mainMap.removeAnnotations(self.mainMap.annotations)
-        }
+        //first remove all existing annotations
+        self.mainMap.removeAnnotations(self.mainMap.annotations)
+
         for l in locations {
             let lat = CLLocationDegrees(l.latitude)
             let long = CLLocationDegrees(l.longitude)
@@ -56,8 +49,29 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     @IBAction func refreshDataAction(sender: UIBarButtonItem) {
+        print("refresh...from MapView...")
+        StudentLocations.sharedInstance.fetchLocations()
     }
     
     @IBAction func addNewPinAction(sender: UIBarButtonItem) {
+        //TODO: just present the new view controller modally on this..
+    }
+    
+    //DATA OBSERVER
+    func refresh() {
+        dispatch_async(dispatch_get_main_queue(), { self.loadPins() })
+    }
+    func add(newItem: AnyObject, indexPath: NSIndexPath) {
+        if let newLocation = newItem as? StudentLocation {
+            let newPin = MKPointAnnotation()
+            let lat = CLLocationDegrees(newLocation.latitude)
+            let long = CLLocationDegrees(newLocation.longitude)
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            newPin.coordinate = coordinate
+            newPin.title = "\(newLocation.firstName) \(newLocation.lastName)"
+            newPin.subtitle = newLocation.mediaURL
+            
+            mainMap.addAnnotation(newPin)
+        }
     }
 }
