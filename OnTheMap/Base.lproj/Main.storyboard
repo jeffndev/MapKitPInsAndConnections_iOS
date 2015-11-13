@@ -321,7 +321,7 @@
         <!--Information Posting View-->
         <scene sceneID="DnB-Co-ySh">
             <objects>
-                <viewController title="Information Posting View" id="wVQ-VE-2pH" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PinPostingViewController" title="Information Posting View" id="wVQ-VE-2pH" customClass="PinPostingViewController" customModule="OnTheMap" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Gr7-XM-UgD"/>
                         <viewControllerLayoutGuide type="bottom" id="ENC-qx-eO8"/>
@@ -329,10 +329,183 @@
                     <view key="view" contentMode="scaleToFill" id="1Ka-Ux-zx1">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pk2-e0-PEH">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.75" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where are you" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pZe-uL-hS6">
+                                        <rect key="frame" x="0.0" y="49" width="375" height="36"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="AYy-9f-nDS"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="26"/>
+                                        <color key="textColor" red="0.47450980392156861" green="0.55294117647058827" blue="0.63137254901960782" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.75" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="today?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Sj-Il-GV0">
+                                        <rect key="frame" x="0.0" y="113" width="375" height="36"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="MBI-wx-HdR"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="26"/>
+                                        <color key="textColor" red="0.47450980390000003" green="0.55294117649999996" blue="0.63137254899999995" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="studying" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4mu-tV-zgh">
+                                        <rect key="frame" x="0.0" y="81" width="375" height="36"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="36" id="kku-hj-v7G"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="26"/>
+                                        <color key="textColor" red="0.30196078431372547" green="0.40392156862745099" blue="0.52941176470588236" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pA6-or-lGa">
+                                        <rect key="frame" x="317" y="13" width="54" height="36"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="17"/>
+                                        <state key="normal" title="Cancel">
+                                            <color key="titleColor" red="0.22352941176470589" green="0.33333333333333331" blue="0.46274509803921571" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancelAction:" destination="wVQ-VE-2pH" eventType="touchUpInside" id="UIC-pd-nty"/>
+                                        </connections>
+                                    </button>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="O3U-O2-od1">
+                                        <rect key="frame" x="0.0" y="163" width="375" height="408"/>
+                                        <animations/>
+                                        <color key="backgroundColor" red="0.25490196078431371" green="0.45882352941176469" blue="0.6470588235294118" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="16"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oWx-fQ-Xli">
+                                        <rect key="frame" x="60" y="599" width="255" height="38"/>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="19"/>
+                                        <state key="normal" title="Find on the Map">
+                                            <color key="titleColor" red="0.21176470588235294" green="0.38039215686274508" blue="0.58431372549019611" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="findOnTheMap" destination="wVQ-VE-2pH" eventType="touchUpInside" id="ieA-Pc-htL"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" red="0.85098039215686272" green="0.84705882352941175" blue="0.83529411764705885" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="O3U-O2-od1" firstAttribute="leading" secondItem="Pk2-e0-PEH" secondAttribute="leading" id="0mi-7x-hyY"/>
+                                    <constraint firstAttribute="trailing" secondItem="O3U-O2-od1" secondAttribute="trailing" id="4D3-T1-jUW"/>
+                                    <constraint firstItem="4Sj-Il-GV0" firstAttribute="top" secondItem="4mu-tV-zgh" secondAttribute="bottom" constant="-4" id="6B4-2K-ey4"/>
+                                    <constraint firstItem="oWx-fQ-Xli" firstAttribute="leading" secondItem="Pk2-e0-PEH" secondAttribute="leading" constant="60" id="6Ji-Yb-I4N"/>
+                                    <constraint firstAttribute="bottom" secondItem="oWx-fQ-Xli" secondAttribute="bottom" constant="30" id="7DX-zx-oBA"/>
+                                    <constraint firstItem="4Sj-Il-GV0" firstAttribute="leading" secondItem="Pk2-e0-PEH" secondAttribute="leading" id="7yW-2t-3mN"/>
+                                    <constraint firstItem="pZe-uL-hS6" firstAttribute="leading" secondItem="Pk2-e0-PEH" secondAttribute="leading" id="8ma-qC-ASc"/>
+                                    <constraint firstItem="O3U-O2-od1" firstAttribute="top" secondItem="4Sj-Il-GV0" secondAttribute="bottom" constant="14" id="BL5-4V-y9Z"/>
+                                    <constraint firstItem="4mu-tV-zgh" firstAttribute="leading" secondItem="Pk2-e0-PEH" secondAttribute="leading" id="GEt-xy-iuV"/>
+                                    <constraint firstItem="oWx-fQ-Xli" firstAttribute="top" secondItem="O3U-O2-od1" secondAttribute="bottom" constant="28" id="J83-Zo-8rH"/>
+                                    <constraint firstAttribute="trailing" secondItem="4mu-tV-zgh" secondAttribute="trailing" id="MUy-7f-S81"/>
+                                    <constraint firstAttribute="trailing" secondItem="pA6-or-lGa" secondAttribute="trailing" constant="4" id="Tru-N6-e2s"/>
+                                    <constraint firstItem="pZe-uL-hS6" firstAttribute="top" secondItem="Pk2-e0-PEH" secondAttribute="top" constant="49" id="XCi-Bm-hPN"/>
+                                    <constraint firstItem="4mu-tV-zgh" firstAttribute="top" secondItem="pZe-uL-hS6" secondAttribute="bottom" constant="-4" id="ZA4-Ao-q11"/>
+                                    <constraint firstAttribute="trailing" secondItem="4Sj-Il-GV0" secondAttribute="trailing" id="bBI-wB-TZZ"/>
+                                    <constraint firstItem="pZe-uL-hS6" firstAttribute="top" secondItem="pA6-or-lGa" secondAttribute="bottom" id="gTc-jF-oaJ"/>
+                                    <constraint firstItem="pA6-or-lGa" firstAttribute="top" secondItem="Pk2-e0-PEH" secondAttribute="top" constant="13" id="lU4-7v-eLG"/>
+                                    <constraint firstAttribute="trailing" secondItem="oWx-fQ-Xli" secondAttribute="trailing" constant="60" id="taY-RF-BCq"/>
+                                    <constraint firstAttribute="trailing" secondItem="pZe-uL-hS6" secondAttribute="trailing" id="yWZ-30-hIy"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="gTc-jF-oaJ"/>
+                                    </mask>
+                                </variation>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ppg-Uv-32c">
+                                <rect key="frame" x="-4" y="20" width="383" height="647"/>
+                                <subviews>
+                                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="5ib-Hm-9X9">
+                                        <rect key="frame" x="0.0" y="152" width="383" height="495"/>
+                                        <animations/>
+                                    </mapView>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="tpv-0j-lRb">
+                                        <rect key="frame" x="0.0" y="54" width="383" height="98"/>
+                                        <animations/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="98" id="ZQn-vq-aRY"/>
+                                        </constraints>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="16"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SPl-w6-L19">
+                                        <rect key="frame" x="319" y="13" width="54" height="36"/>
+                                        <animations/>
+                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="17"/>
+                                        <state key="normal" title="Cancel">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cancelAction:" destination="wVQ-VE-2pH" eventType="touchUpInside" id="AlX-82-ybv"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tmX-xM-UUI">
+                                        <rect key="frame" x="148" y="564" width="87" height="34"/>
+                                        <animations/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="87" id="9Tv-h7-FQs"/>
+                                            <constraint firstAttribute="height" constant="34" id="vBz-Pk-pNU"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="17"/>
+                                        <state key="normal" title="Submit">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="submitPinAction:" destination="wVQ-VE-2pH" eventType="touchUpInside" id="G6p-el-Ca4"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <animations/>
+                                <color key="backgroundColor" red="0.25490196078431371" green="0.45882352941176469" blue="0.6470588235294118" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="5ib-Hm-9X9" firstAttribute="top" secondItem="tpv-0j-lRb" secondAttribute="bottom" id="FDr-Oa-ebw"/>
+                                    <constraint firstAttribute="trailing" secondItem="tpv-0j-lRb" secondAttribute="trailing" id="JUa-tx-VZm"/>
+                                    <constraint firstAttribute="bottom" secondItem="tmX-xM-UUI" secondAttribute="bottom" constant="49" id="Q3h-Nj-tMd"/>
+                                    <constraint firstItem="tmX-xM-UUI" firstAttribute="centerX" secondItem="Ppg-Uv-32c" secondAttribute="centerX" id="T2K-Ig-Cl5"/>
+                                    <constraint firstAttribute="bottom" secondItem="5ib-Hm-9X9" secondAttribute="bottom" id="Vqd-xO-Eiv"/>
+                                    <constraint firstItem="5ib-Hm-9X9" firstAttribute="leading" secondItem="Ppg-Uv-32c" secondAttribute="leading" id="YL6-ke-CwT"/>
+                                    <constraint firstItem="SPl-w6-L19" firstAttribute="top" secondItem="Ppg-Uv-32c" secondAttribute="top" constant="13" id="ZLJ-1t-7B2"/>
+                                    <constraint firstAttribute="trailing" secondItem="SPl-w6-L19" secondAttribute="trailing" constant="10" id="bv0-xQ-2fr"/>
+                                    <constraint firstAttribute="trailing" secondItem="5ib-Hm-9X9" secondAttribute="trailing" id="eJs-YZ-zdB"/>
+                                    <constraint firstItem="tpv-0j-lRb" firstAttribute="leading" secondItem="Ppg-Uv-32c" secondAttribute="leading" id="gWv-Vb-Z9h"/>
+                                    <constraint firstItem="tpv-0j-lRb" firstAttribute="top" secondItem="SPl-w6-L19" secondAttribute="bottom" constant="5" id="zg9-bI-Xf6"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Ppg-Uv-32c" firstAttribute="leading" secondItem="1Ka-Ux-zx1" secondAttribute="leadingMargin" constant="-20" id="3HL-pI-baB"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Ppg-Uv-32c" secondAttribute="trailing" constant="-20" id="46K-hN-1Tv"/>
+                            <constraint firstItem="ENC-qx-eO8" firstAttribute="top" secondItem="Ppg-Uv-32c" secondAttribute="bottom" id="7jd-57-ntD"/>
+                            <constraint firstItem="ENC-qx-eO8" firstAttribute="top" secondItem="Pk2-e0-PEH" secondAttribute="bottom" id="Iq1-vf-cYb"/>
+                            <constraint firstItem="Pk2-e0-PEH" firstAttribute="leading" secondItem="1Ka-Ux-zx1" secondAttribute="leading" id="lKF-T6-A5I"/>
+                            <constraint firstAttribute="trailing" secondItem="Pk2-e0-PEH" secondAttribute="trailing" id="r9u-O2-2kK"/>
+                            <constraint firstItem="Ppg-Uv-32c" firstAttribute="top" secondItem="Gr7-XM-UgD" secondAttribute="bottom" id="u6O-Sd-jpJ"/>
+                            <constraint firstItem="Pk2-e0-PEH" firstAttribute="top" secondItem="1Ka-Ux-zx1" secondAttribute="top" id="zZI-eN-D0z"/>
+                        </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
+                    <connections>
+                        <outlet property="findPinView" destination="Pk2-e0-PEH" id="lXC-bS-h7K"/>
+                        <outlet property="locationEntryTextView" destination="O3U-O2-od1" id="avz-dO-2AP"/>
+                        <outlet property="mainMap" destination="5ib-Hm-9X9" id="y3j-BF-Haz"/>
+                        <outlet property="submitPinView" destination="Ppg-Uv-32c" id="Swz-5F-Lul"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="L6e-rP-ZYd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -24,7 +24,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
             StudentLocations.sharedInstance.fetchLocations()
         }
     }
-    
+   
     func loadPins() {
         let locations = StudentLocations.sharedInstance.locations()
         
@@ -55,6 +55,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
     
     @IBAction func addNewPinAction(sender: UIBarButtonItem) {
         //TODO: just present the new view controller modally on this..
+        let vc = storyboard?.instantiateViewControllerWithIdentifier("PinPostingViewController") as! PinPostingViewController
+        presentViewController(vc, animated: true, completion: nil)
     }
     
     //DATA OBSERVER

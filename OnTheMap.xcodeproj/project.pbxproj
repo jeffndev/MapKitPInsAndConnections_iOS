@@ -20,6 +20,7 @@
 		BD788E961BF512C400736340 /* RESTApiHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E951BF512C400736340 /* RESTApiHelpers.swift */; };
 		BDF5CCD11BF655FC000D443F /* DataObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF5CCD01BF655FC000D443F /* DataObserver.swift */; };
 		BDF5CCD31BF65660000D443F /* StudentLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF5CCD21BF65660000D443F /* StudentLocations.swift */; };
+		BDF5CCD51BF6746F000D443F /* PinPostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF5CCD41BF6746F000D443F /* PinPostingViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		BD788E951BF512C400736340 /* RESTApiHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTApiHelpers.swift; sourceTree = "<group>"; };
 		BDF5CCD01BF655FC000D443F /* DataObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataObserver.swift; sourceTree = "<group>"; };
 		BDF5CCD21BF65660000D443F /* StudentLocations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentLocations.swift; sourceTree = "<group>"; };
+		BDF5CCD41BF6746F000D443F /* PinPostingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinPostingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 				BD4A9FE21BF29EA1004E6C15 /* LoginViewController.swift */,
 				BD4A9FE41BF2ACF0004E6C15 /* MapViewController.swift */,
 				BD4164BD1BF549C700A8C6E0 /* StudentsTableViewController.swift */,
+				BDF5CCD41BF6746F000D443F /* PinPostingViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -205,6 +208,7 @@
 				BDF5CCD11BF655FC000D443F /* DataObserver.swift in Sources */,
 				BD4A9FE31BF29EA1004E6C15 /* LoginViewController.swift in Sources */,
 				BD4A9FE51BF2ACF0004E6C15 /* MapViewController.swift in Sources */,
+				BDF5CCD51BF6746F000D443F /* PinPostingViewController.swift in Sources */,
 				BD788E911BF50D1A00736340 /* ParseProvider.swift in Sources */,
 				BD5BC3311BF3D22500D08255 /* UdacityProvider.swift in Sources */,
 				BD4A9FCF1BF28F27004E6C15 /* AppDelegate.swift in Sources */,

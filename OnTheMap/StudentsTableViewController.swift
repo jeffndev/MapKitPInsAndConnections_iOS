@@ -29,6 +29,8 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
     
     @IBAction func addNewPinAction(sender: UIBarButtonItem) {
         //TODO: just present the new view controller modally on this..
+        let vc = storyboard?.instantiateViewControllerWithIdentifier("PinPostingViewController") as! PinPostingViewController
+        presentViewController(vc, animated: true, completion: nil)
     }
     
     @IBAction func refreshDataAction(sender: UIBarButtonItem) {
