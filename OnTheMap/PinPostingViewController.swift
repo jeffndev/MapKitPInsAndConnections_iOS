@@ -9,18 +9,35 @@
 import Foundation
 import MapKit
 
-class PinPostingViewController: UIViewController, MKMapViewDelegate, DataObserver {
+class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewDelegate, DataObserver {
     
     @IBOutlet weak var submitPinView: UIView!
     @IBOutlet weak var findPinView: UIView!
     
+    @IBOutlet weak var mediaURLTextView: UITextView!
     @IBOutlet weak var locationEntryTextView: UITextView!
     @IBOutlet weak var mainMap: MKMapView!
     
+    let MAP_LOCAL_ZOOM_WIDTH = 2000.0
+    
+    let placeholderTextMap = [1: "Enter your location here", 2: "Enter your Url here"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("ViewDidLoad called on PinPostingViewController")
         StudentLocations.sharedInstance.registerObserver(self)
+        
+        //Prepare the textviews with Placeholder texts
+        locationEntryTextView.delegate = self
+        mediaURLTextView.delegate = self
+        locationEntryTextView.tag = 1
+        locationEntryTextView.text = placeholderTextMap[locationEntryTextView.tag]!
+        locationEntryTextView.textColor = UIColor.lightGrayColor()
+        mediaURLTextView.tag = 2
+        mediaURLTextView.text = placeholderTextMap[mediaURLTextView.tag]!
+        mediaURLTextView.textColor = UIColor.lightGrayColor()
+        //
+        
+        
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -38,28 +55,29 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, DataObserve
     */
     @IBAction func findOnTheMap() {
         let geoText = locationEntryTextView.text
-        //findPinView.hidden = true
         let g = CLGeocoder()
         g.geocodeAddressString(geoText) { (placemarks, error) in
             if error == nil {
                 if placemarks!.count > 0 {
-                    let place = placemarks![0] //as! CLPlacemark
+                    let place = placemarks![0]
                     let loc = place.location
-                    let coord2ds = loc?.coordinate
-                    //create an annotation and add to map...
-                    let annotation = MKPointAnnotation()
-                    annotation.coordinate = coord2ds!
-                    self.mainMap.addAnnotation(annotation)
-                    //hide the find button, open the map
-                    self.findPinView.hidden = true
-                    self.submitPinView.hidden = false
+                    if let coord2ds = loc?.coordinate {
+                        //create an annotation and add to map...
+                        let annotation = MKPointAnnotation()
+                        annotation.coordinate = coord2ds
+                        self.mainMap.addAnnotation(annotation)
+                        self.mainMap.centerCoordinate = coord2ds
+                        self.mainMap.region = MKCoordinateRegionMakeWithDistance(coord2ds,
+                            self.MAP_LOCAL_ZOOM_WIDTH, self.MAP_LOCAL_ZOOM_WIDTH)
+                        //hide the find button, open the map
+                        self.findPinView.hidden = true
+                        self.submitPinView.hidden = false
+                    }
                 }
             } else {
                 let alert = UIAlertController()
-                alert.title = "Not Found:"
-                let okAction = UIAlertAction(title: "\(geoText)", style: .Default) { alert in
-                    //self.dismissViewControllerAnimated(true, completion: nil)
-                }
+                alert.title = "Location Not Found:"
+                let okAction = UIAlertAction(title: "\(geoText)", style: .Default, handler: nil)
                 alert.addAction(okAction)
                 self.presentViewController(alert, animated: true, completion: nil)
             }
@@ -79,9 +97,23 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, DataObserve
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    //DATA OBSERVER
+    //Mark: DATA OBSERVER
     func refresh() { }
     func add(newItem: AnyObject, indexPath: NSIndexPath) {
         //TODO: some sort of feedback that the data was saved to the
+    }
+    
+    //Mark: UITextViewDelegates
+    func textViewDidBeginEditing(textView: UITextView) {
+        if textView.textColor == UIColor.lightGrayColor() {
+            textView.text = nil
+            textView.textColor = UIColor.whiteColor()
+        }
+    }
+    func textViewDidEndEditing(textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = placeholderTextMap[textView.tag]
+            textView.textColor = UIColor.lightGrayColor()
+        }
     }
 }

@@ -18,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     enum ErrorsForUserFeedback {
         case AUTHENTICATION_EXCEPTION
         case FAILED_NETWORK
-        case FAIL_GRACEFULLY
+        case POST_PIN_FAILURE
+        case LOCATIONS_DLOAD_FAILURE
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {

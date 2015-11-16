@@ -246,11 +246,11 @@
                         <viewControllerLayoutGuide type="bottom" id="FBM-uP-Fnx"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="nOT-sq-eNf">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="45" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="dZJ-iG-dam">
-                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
                                 <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -295,6 +295,7 @@
                             <constraint firstItem="dZJ-iG-dam" firstAttribute="bottom" secondItem="FBM-uP-Fnx" secondAttribute="top" id="iGv-ET-ZaI"/>
                         </constraints>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" title="On The Map" id="h8t-sG-cz8">
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="NPh-LJ-T2G"/>
                         <rightBarButtonItems>
@@ -504,6 +505,7 @@
                         <outlet property="findPinView" destination="Pk2-e0-PEH" id="lXC-bS-h7K"/>
                         <outlet property="locationEntryTextView" destination="O3U-O2-od1" id="avz-dO-2AP"/>
                         <outlet property="mainMap" destination="5ib-Hm-9X9" id="y3j-BF-Haz"/>
+                        <outlet property="mediaURLTextView" destination="tpv-0j-lRb" id="jfp-5z-rJ0"/>
                         <outlet property="submitPinView" destination="Ppg-Uv-32c" id="Swz-5F-Lul"/>
                     </connections>
                 </viewController>

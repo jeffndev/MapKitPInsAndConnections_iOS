@@ -22,7 +22,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
         if StudentLocations.sharedInstance.isPopulated() {
             loadPins()
         } else {
-            StudentLocations.sharedInstance.fetchLocations()
+            StudentLocations.sharedInstance.fetchLocations(){ success in
+                if !success {
+                    dispatch_async(dispatch_get_main_queue()){
+                        self.downloadFailureAlert()
+                    }
+                }
+            }
+
         }
     }
    
@@ -49,10 +56,23 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
         }
         self.mainMap.addAnnotations(annotations)
     }
+    func downloadFailureAlert() {
+        let alert = UIAlertController()
+        let okAction = UIAlertAction(title: "Student Data Failed to Download", style: .Default, handler: nil)
+        alert.addAction(okAction)
+        presentViewController(alert, animated: true, completion: nil)
+    }
     
     //MARK: Actions
     @IBAction func refreshDataAction(sender: UIBarButtonItem) {
-        StudentLocations.sharedInstance.fetchLocations()
+        StudentLocations.sharedInstance.fetchLocations(){ success in
+            if !success {
+                dispatch_async(dispatch_get_main_queue()){
+                    self.downloadFailureAlert()
+                }
+            }
+        }
+
     }
     
     @IBAction func addNewPinAction(sender: UIBarButtonItem) {

@@ -18,17 +18,16 @@ class StudentLocations {
     func registerObserver(observer: DataObserver) { observers.append(observer) }
     func locations() ->[StudentLocation] { return mLocations }
     func isPopulated() -> Bool { return mLocations.count > 0 }
-    func fetchLocations() {
+    func fetchLocations(completion: (success:Bool) -> Void) {
         //an async task
         let provider = ParseProvider()
-        provider.fetchStudentLocations(){ (success, errorMessage) in
+        provider.fetchStudentLocations(){ (success, errorMessage, handlerType) in
             if success {
                 self.mLocations.removeAll()
                 self.mLocations.appendContentsOf(provider.locations)
                 for o in self.observers { o.refresh() }
-            } else {
-                print(errorMessage)
             }
+            completion(success: success)
         }
     }
     func checkForExistingLocation(loc: StudentLocation) {

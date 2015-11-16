@@ -44,20 +44,18 @@ class ParseProvider {
     },
     */
 
-    func fetchStudentLocations(doRefresh: Bool = false, limitNumRecords: Int = 100, completion: (success: Bool, errorMessage: String?)-> Void) {
+    func fetchStudentLocations(doRefresh: Bool = false, limitNumRecords: Int = 100, completion: (success: Bool, errorMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?)-> Void) {
         if locations.count > 0 && doRefresh == false {
-            completion(success: true, errorMessage: nil)
+            completion(success: true, errorMessage: nil, handleStatus: nil)
             return
         } else {
-            //let FETCH_LIMIT = 100
             let GET_STUDENT_LOCATIONS_METHOD = "StudentLocation"
-            let restParams = ["limit": limitNumRecords]
+            let restParams: [String: AnyObject] = ["limit": limitNumRecords, "order": "-updatedAt"]
             let requestString: String = BASE_API_URL_STRING + GET_STUDENT_LOCATIONS_METHOD + RESTApiHelpers.assembleRestParamaters(restParams)
             print(requestString)
             guard let requestUrl = NSURL(string: requestString) else {
-                //TODO: implement log and user feedback mechanism
                 print("could not build url from \(requestString)")
-                completion(success: false, errorMessage: "could not build url from \(requestString)")
+                completion(success: false, errorMessage: "could not build url from \(requestString)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 return
             }
             let request = NSMutableURLRequest(URL: requestUrl)
@@ -67,28 +65,23 @@ class ParseProvider {
             let session = NSURLSession.sharedSession()
             let task = session.dataTaskWithRequest(request) { (data, response, error) in
                 guard (error == nil) else {
-                    //TODO: implement log and user feedback mechanism
-                    completion(success: false, errorMessage: "There was an error with your request: \(error)")
+                    completion(success: false, errorMessage: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                     return
                 }
                 
                 guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                     if let response = response as? NSHTTPURLResponse {
-                        //TODO: implement log and user feedback mechanism
-                        completion(success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!")
+                        completion(success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                     } else if let response = response {
-                        //TODO: implement log and user feedback mechanism
-                        completion(success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!")
+                        completion(success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                     } else {
-                        //TODO: implement log and user feedback mechanism
-                        completion(success: false, errorMessage: "Your request returned an invalid response!")
+                        completion(success: false, errorMessage: "Your request returned an invalid response!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                     }
                     return
                 }
                 
                 guard let data = data else {
-                    //TODO: implement log and user feedback mechanism
-                    completion(success: false, errorMessage: "Request data returned empty")
+                    completion(success: false, errorMessage: "Request data returned empty", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                     return
                 }
                 
@@ -96,25 +89,19 @@ class ParseProvider {
                 do {
                     parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
                 } catch {
-                    //TODO: implement log and user feedback mechanism
-                    completion(success: false, errorMessage: "could not parse data as JSON")
+                    completion(success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                     return
                 }
-                //print(parsedResult)
                 //now start parsing it out and get those locations!
                 guard let locationObjects = parsedResult["results"] as? [[String: AnyObject]] else {
-                    //TODO: implement log and user feedback mechanism
-                    completion(success: false, errorMessage: "Could not parse the Results from the JSON returned")
+                    completion(success: false, errorMessage: "Could not parse the Results from the JSON returned", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                     return
                 }
                 
                 for loc in locationObjects {
-                    if let objLocation = StudentLocation.fromJSON(loc) {
-                        self.locations.append(objLocation)
-                    }
+                    self.locations.append(StudentLocation(json: loc))
                 }
-                print("Locations count: \(self.locations.count)")
-                completion(success: true, errorMessage: nil)
+                completion(success: true, errorMessage: nil, handleStatus: nil)
             }
             task.resume()
         }

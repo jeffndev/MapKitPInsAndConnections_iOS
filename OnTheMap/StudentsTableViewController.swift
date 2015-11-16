@@ -22,10 +22,22 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
         if StudentLocations.sharedInstance.isPopulated() {
             tableView.reloadData()
         } else {
-            StudentLocations.sharedInstance.fetchLocations()
+            StudentLocations.sharedInstance.fetchLocations() { success in
+                if !success {
+                    dispatch_async(dispatch_get_main_queue()){
+                        self.downloadFailureAlert()
+                    }
+                }
+            }
         }
     }
-    
+    //MARK: helper functions
+    func downloadFailureAlert() {
+        let alert = UIAlertController()
+        let okAction = UIAlertAction(title: "Student Data Failed to Download", style: .Default, handler: nil)
+        alert.addAction(okAction)
+        presentViewController(alert, animated: true, completion: nil)
+    }
     
     //MARK: Actions
     @IBAction func addNewPinAction(sender: UIBarButtonItem) {
@@ -34,13 +46,21 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
     }
     
     @IBAction func refreshDataAction(sender: UIBarButtonItem) {
-        StudentLocations.sharedInstance.fetchLocations()
+        StudentLocations.sharedInstance.fetchLocations(){ success in
+            if !success {
+                dispatch_async(dispatch_get_main_queue()){
+                    self.downloadFailureAlert()
+                }
+            }
+        }
+
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CELL_ID)!
         let locations = StudentLocations.sharedInstance.locations()
         cell.textLabel?.text = "\(locations[indexPath.row].firstName) \(locations[indexPath.row].lastName)"
+        cell.detailTextLabel?.text = "\(locations[indexPath.row].updatedAt)"
         return cell
     }
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
