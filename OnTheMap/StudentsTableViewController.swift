@@ -12,9 +12,10 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
     
     let CELL_ID = "StudentCell"
     
-    
     @IBOutlet weak var tableView: UITableView!
     
+    
+    //MARK: Lifecycle overrides
     override func viewDidLoad() {
         super.viewDidLoad()
         StudentLocations.sharedInstance.registerObserver(self)
@@ -26,15 +27,13 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
     }
     
     
-    
+    //MARK: Actions
     @IBAction func addNewPinAction(sender: UIBarButtonItem) {
-        //TODO: just present the new view controller modally on this..
         let vc = storyboard?.instantiateViewControllerWithIdentifier("PinPostingViewController") as! PinPostingViewController
         presentViewController(vc, animated: true, completion: nil)
     }
     
     @IBAction func refreshDataAction(sender: UIBarButtonItem) {
-        print("refresh...from TableView..")
         StudentLocations.sharedInstance.fetchLocations()
     }
     
@@ -57,6 +56,17 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
     func add(newItem: AnyObject, indexPath: NSIndexPath) {
         if let _ = newItem as? StudentLocation {
             tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+        }
+    }
+    //MARK UITableViewDelegate
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let app = UIApplication.sharedApplication()
+        let locations = StudentLocations.sharedInstance.locations()
+        guard let tryUrlString = locations[indexPath.row].mediaURL else {
+            return
+        }
+        if let url = RESTApiHelpers.forgivingUrlFromString(tryUrlString) {
+            app.openURL(url)
         }
     }
 }

@@ -27,6 +27,13 @@ struct RESTApiHelpers {
         }
         return encodedParametersChunks.count == 0 ? "" : "?\(encodedParametersChunks.joinWithSeparator("&"))"
     }
-    
+    static func forgivingUrlFromString(rawString: String) -> NSURL? {
+        let toOpen = rawString.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())
+        if !toOpen.hasPrefix("http://") && !toOpen.hasPrefix("https://") {
+            return NSURL(string: "http://" + toOpen)
+        } else {
+            return NSURL(string: toOpen)
+        }
+    }
 }
 

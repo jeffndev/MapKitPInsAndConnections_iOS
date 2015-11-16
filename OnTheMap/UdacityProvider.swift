@@ -6,11 +6,12 @@
 //  Copyright © 2015 Jeff Newell. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class UdacityProvider {
     static let SIGNUP_URL_STRING = "https://www.udacity.com/account/auth#!/signup"
-    static let BASE_API_URL_STRING = "https://www.udacity.com/api/"
+    private static let BASE_API_URL_STRING = "https://www.udacity.com/api/"
+    
     
     /* SAMPLE DATA
     {
@@ -24,14 +25,12 @@ class UdacityProvider {
     }
     }
     */
-    static func loginAction(email: String, password: String, completion: (success: Bool, errMsg: String?) -> Void) {
+    static func loginAction(email: String, password: String, completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
         let LOGIN_SESSION_METHOD = "session"
         
         let requestString = UdacityProvider.BASE_API_URL_STRING + LOGIN_SESSION_METHOD
-        //print(requestString)
         guard let requestUrl = NSURL(string: requestString) else {
-            //TODO: implement log and user feedback mechanism
-            completion(success: false, errMsg: "could not parse a URL from \(requestString)")
+            completion(success: false, errMsg: "could not parse a URL from \(requestString)", handleStatus: nil)
             return
         }
         let request = NSMutableURLRequest(URL: requestUrl)
@@ -45,29 +44,26 @@ class UdacityProvider {
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             
             guard (error == nil) else {
-                //TODO: implement log and user feedback mechanism
-                completion(success: false, errMsg: "There was an error with your request: \(error)")
+                completion(success: false, errMsg: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.FAILED_NETWORK)
                 return
             }
-            //TODO: think about how to handle 403 errors...could indicate to user that their credentials not recognized..
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if let response = response as? NSHTTPURLResponse {
-                    //TODO: implement log and user feedback mechanism
-                    completion(success: false, errMsg: "Your request returned an invalid response! Status code: \(response.statusCode)!")
-                    //TODO: LET USER KNOW if there is a 403 response, indicating probable bad credentials entered..
+                    if(response.statusCode == 403){
+                        completion(success: false, errMsg: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: AppDelegate.ErrorsForUserFeedback.AUTHENTICATION_EXCEPTION)
+                    }else {
+                        completion(success: false, errMsg: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: nil)
+                    }
                 } else if let response = response {
-                    //TODO: implement log and user feedback mechanism
-                    completion(success: false, errMsg: "Your request returned an invalid response! Response: \(response)!")
+                    completion(success: false, errMsg: "Your request returned an invalid response! Response: \(response)!", handleStatus: nil)
                 } else {
-                    //TODO: implement log and user feedback mechanism
-                    completion(success: false, errMsg: "Your request returned an invalid response!")
+                    completion(success: false, errMsg: "Your request returned an invalid response!", handleStatus: nil)
                 }
                 return
             }
             
             guard let data = data else {
-                //TODO: implement log and user feedback mechanism
-                completion(success: false, errMsg: "data from JSON request came up empty")
+                completion(success: false, errMsg: "data from JSON request came up empty", handleStatus: nil)
                 return
             }
             let trimmedData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
@@ -76,41 +72,33 @@ class UdacityProvider {
             do {
                 parsedResult = try NSJSONSerialization.JSONObjectWithData(trimmedData, options: .AllowFragments)
             } catch {
-                //TODO: implement log and user feedback mechanism
-                completion(success: false, errMsg: "Data could not be parsed as JSON")
+                completion(success: false, errMsg: "Data could not be parsed as JSON", handleStatus: nil)
                 return
             }
-            //print(parsedResult)
             //get the Account object registered: Bool, key: Int
             guard let accountInfo = parsedResult["account"] as? [String: AnyObject] else {
-                //TODO: implement log and user feedback mechanism
-                completion(success: false, errMsg: "could not find account information in JSON response")
+                completion(success: false, errMsg: "could not find account information in JSON response", handleStatus: nil)
                 return
             }
             guard let registered = accountInfo["registered"] as? Bool else {
-                //TODO: implement log and user feedback mechanism
-                completion(success: false, errMsg: "could not find valid registration in JSON response")
+                completion(success: false, errMsg: "could not find valid registration in JSON response", handleStatus: nil)
                 return
             }
             guard registered == true else {
-                //TODO: show not registered status feedback to user...direct them to sign up
-                completion(success: false, errMsg: "User is not registered, please sign up for a Udacity account")
+                completion(success: false, errMsg: "User is not registered, please sign up for a Udacity account", handleStatus: AppDelegate.ErrorsForUserFeedback.AUTHENTICATION_EXCEPTION)
                 return
             }
             guard let udacityUserId = accountInfo["key"] as? String else {
-                //TODO: probably can't move forward, since need this for all future request...
+                //NOTE: probably can't move forward, since need this for all future request...
                 //...then again, there is a lot of Public functionality, so maybe this might
                 //....be better to just fail gracefully when those non-public api's are called..
-                completion(success: false, errMsg: "Could not find a user id")
+                completion(success: false, errMsg: "Could not find a user id", handleStatus: nil)
                 return
             }
-            print("my userid: \(udacityUserId)")
             
-            //dispatch_async(dispatch_get_main_queue()) {
-            completion(success: true, errMsg: nil)
-//                let vc = self.storyboard!.instantiateViewControllerWithIdentifier("MainTabScreen") as! UITabBarController
-//                self.presentViewController(vc, animated: true, completion: nil)
-//            }
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.UdacityUserId = udacityUserId
+            completion(success: true, errMsg: nil, handleStatus: nil)
         }
         
         task.resume()

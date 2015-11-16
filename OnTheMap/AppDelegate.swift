@@ -13,7 +13,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
+    var UdacityUserId: String?
+    
+    enum ErrorsForUserFeedback {
+        case AUTHENTICATION_EXCEPTION
+        case FAILED_NETWORK
+        case FAIL_GRACEFULLY
+    }
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         return true

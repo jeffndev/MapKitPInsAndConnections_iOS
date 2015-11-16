@@ -15,6 +15,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
     
     @IBOutlet weak var mainMap: MKMapView!
     
+    //MARK: Lifecycle overrides
     override func viewDidLoad() {
         super.viewDidLoad()
         StudentLocations.sharedInstance.registerObserver(self)
@@ -25,6 +26,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
         }
     }
    
+    //MARK: helper methods
     func loadPins() {
         let locations = StudentLocations.sharedInstance.locations()
         
@@ -48,18 +50,17 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
         self.mainMap.addAnnotations(annotations)
     }
     
+    //MARK: Actions
     @IBAction func refreshDataAction(sender: UIBarButtonItem) {
-        print("refresh...from MapView...")
         StudentLocations.sharedInstance.fetchLocations()
     }
     
     @IBAction func addNewPinAction(sender: UIBarButtonItem) {
-        //TODO: just present the new view controller modally on this..
         let vc = storyboard?.instantiateViewControllerWithIdentifier("PinPostingViewController") as! PinPostingViewController
         presentViewController(vc, animated: true, completion: nil)
     }
     
-    //DATA OBSERVER
+    //MARK: DATA OBSERVER
     func refresh() {
         dispatch_async(dispatch_get_main_queue(), { self.loadPins() })
     }
@@ -75,5 +76,38 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
             
             mainMap.addAnnotation(newPin)
         }
+    }
+    
+    //MARK: MKMapViewDelegate
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        
+        if pinView == nil {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinColor = .Red
+            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+        }
+        else {
+            pinView!.annotation = annotation
+        }
+        
+        return pinView
+    }
+
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        if control == view.rightCalloutAccessoryView {
+            let app = UIApplication.sharedApplication()
+            if let toOpen = view.annotation?.subtitle! {
+                if let url = RESTApiHelpers.forgivingUrlFromString(toOpen) {
+                    app.openURL(url)
+                }
+
+            }
+        }
+
     }
 }

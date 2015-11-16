@@ -51,15 +51,27 @@ class LoginViewController: UIViewController {
         }
         passwordTextField.placeholder = oldPlaceholder
         
-        UdacityProvider.loginAction(emailText, password: passwordText) { (success, errMsg) in
+        UdacityProvider.loginAction(emailText, password: passwordText) { (success, errMsg, handlerType) in
             if success == true {
                 dispatch_async(dispatch_get_main_queue()) {
                     let vc = self.storyboard!.instantiateViewControllerWithIdentifier("MainTabScreen") as! UITabBarController
                     self.presentViewController(vc, animated: true, completion: nil)
                 }
             }else {
-                //TODO: notifi of error
-                print(errMsg!)
+                if let customErrorType = handlerType where [AppDelegate.ErrorsForUserFeedback.FAILED_NETWORK, AppDelegate.ErrorsForUserFeedback.AUTHENTICATION_EXCEPTION].contains(customErrorType){
+                    dispatch_async(dispatch_get_main_queue()){
+                        let alert = UIAlertController()
+                        var shortMsg: String
+                        if customErrorType == AppDelegate.ErrorsForUserFeedback.AUTHENTICATION_EXCEPTION {
+                            shortMsg = "Login Failure, Sign-up if no account."
+                        } else {
+                            shortMsg = "Network Failure, could not Login."
+                        }
+                        let okAction = UIAlertAction(title: shortMsg, style: .Cancel, handler: nil)
+                        alert.addAction(okAction)
+                        self.presentViewController(alert, animated: true, completion: nil)
+                    }
+                }
             }
         }
     }

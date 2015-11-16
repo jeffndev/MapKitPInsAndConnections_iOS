@@ -55,7 +55,13 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, DataObserve
                     self.submitPinView.hidden = false
                 }
             } else {
-                //TODO: show alert
+                let alert = UIAlertController()
+                alert.title = "Not Found:"
+                let okAction = UIAlertAction(title: "\(geoText)", style: .Default) { alert in
+                    //self.dismissViewControllerAnimated(true, completion: nil)
+                }
+                alert.addAction(okAction)
+                self.presentViewController(alert, animated: true, completion: nil)
             }
         }
         
