@@ -87,14 +87,14 @@ class LoginViewController: UIViewController {
             }else {
                 if let customErrorType = handlerType where [AppDelegate.ErrorsForUserFeedback.FAILED_NETWORK, AppDelegate.ErrorsForUserFeedback.AUTHENTICATION_EXCEPTION].contains(customErrorType){
                     dispatch_async(dispatch_get_main_queue()){
-                        let alert = UIAlertController()
                         var shortMsg: String
                         if customErrorType == AppDelegate.ErrorsForUserFeedback.AUTHENTICATION_EXCEPTION {
                             shortMsg = "Login Failure, Sign-up if no account."
                         } else {
                             shortMsg = "Network Failure, could not Login."
                         }
-                        let okAction = UIAlertAction(title: shortMsg, style: .Cancel, handler: nil)
+                        let alert = UIAlertController(title: "Login Alert", message: shortMsg, preferredStyle: .Alert)
+                        let okAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
                         alert.addAction(okAction)
                         self.presentViewController(alert, animated: true, completion: nil)
                     }

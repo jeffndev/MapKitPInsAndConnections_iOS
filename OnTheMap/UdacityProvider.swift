@@ -113,9 +113,81 @@ class UdacityProvider {
         task.resume()
     }
     
-    //TODO: have to fetch user data from Udacity
     func fetchPublicUserInfo(userId: String, completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
+        let GET_USER_METHOD = "users/\(userId)"
         
-        
+        let requestString = UdacityProvider.BASE_API_URL_STRING + GET_USER_METHOD
+        guard let requestUrl = NSURL(string: requestString) else {
+            completion(success: false, errMsg: "could not parse a URL from \(requestString)", handleStatus: nil)
+            return
+        }
+        let request = NSMutableURLRequest(URL: requestUrl)
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { (data, response, error) in
+            
+            guard (error == nil) else {
+                completion(success: false, errMsg: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.FAILED_NETWORK)
+                return
+            }
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                if let response = response as? NSHTTPURLResponse {
+                    if(response.statusCode == 403){
+                        completion(success: false, errMsg: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: nil)
+                    }else {
+                        completion(success: false, errMsg: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: nil)
+                    }
+                } else if let response = response {
+                    completion(success: false, errMsg: "Your request returned an invalid response! Response: \(response)!", handleStatus: nil)
+                } else {
+                    completion(success: false, errMsg: "Your request returned an invalid response!", handleStatus: nil)
+                }
+                return
+            }
+            
+            guard let data = data else {
+                completion(success: false, errMsg: "data from JSON request came up empty", handleStatus: nil)
+                return
+            }
+            let trimmedData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+            
+            var parsedResult: AnyObject!
+            do {
+                parsedResult = try NSJSONSerialization.JSONObjectWithData(trimmedData, options: .AllowFragments)
+            } catch {
+                completion(success: false, errMsg: "Data could not be parsed as JSON", handleStatus: nil)
+                return
+            }
+            print(parsedResult)
+            guard let userInfo = parsedResult["user"] as? [String: AnyObject] else {
+                completion(success: false, errMsg: "Could not parse out user information", handleStatus: nil)
+                return
+            }
+            var parseFailures = [String]()
+            if let fbookId = userInfo["_facebook_id"] as? String {
+                self.UserFacebookId = fbookId
+            }else {
+                parseFailures.append("Facebook ID")
+            }
+            if let fname = userInfo["first_name"] as? String {
+                self.UserFirstName = fname
+            } else {
+                parseFailures.append("First Name")
+            }
+            if let lname = userInfo["last_name"] as? String {
+                self.UserLastName = lname
+            } else {
+                parseFailures.append("Last Name")
+            }
+            var parseProblemString: String? = nil
+            if !parseFailures.isEmpty {
+                parseProblemString = "Failed to parse User Information: " + parseFailures.joinWithSeparator(",")
+            }
+            completion(success: true, errMsg: parseProblemString, handleStatus: nil)
+        }
+        task.resume()
+    }
+    
+    func deleteLoginSession(completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void){
+        //TODO:
     }
 }

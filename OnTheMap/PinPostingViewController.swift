@@ -9,8 +9,9 @@
 import Foundation
 import MapKit
 
-class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewDelegate, DataObserver {
+class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewDelegate {
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var submitPinView: UIView!
     @IBOutlet weak var findPinView: UIView!
     
@@ -31,7 +32,6 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        StudentLocations.sharedInstance.registerObserver(self)
         
         //Prepare the textviews with Placeholder texts
         locationEntryTextView.delegate = self
@@ -63,9 +63,13 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
 
    
     @IBAction func findOnTheMap() {
+        
+        activityIndicator.startAnimating()
+        
         let geoText = locationEntryTextView.text
         let g = CLGeocoder()
         g.geocodeAddressString(geoText) { (placemarks, error) in
+            self.activityIndicator.stopAnimating()
             if error == nil {
                 if placemarks!.count > 0 {
                     let place = placemarks![0]
@@ -86,9 +90,8 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
                     }
                 }
             } else {
-                let alert = UIAlertController()
-                alert.title = "Location Not Found:"
-                let okAction = UIAlertAction(title: "\(geoText)", style: .Default, handler: nil)
+                let alert = UIAlertController(title: "Location Not Found", message: "\(geoText ?? "...")", preferredStyle: .Alert)
+                let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
                 alert.addAction(okAction)
                 self.presentViewController(alert, animated: true, completion: nil)
             }
@@ -98,17 +101,19 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     
     @IBAction func submitPinAction(sender: UIButton) {
         
-        StudentLocations.sharedInstance.checkForExistingLocationForStudent() { (success, errMsg, hasExisting) in
-            if let exists = hasExisting where exists == true {
+        StudentLocations.sharedInstance.checkForExistingLocationForStudent(locationEntryTextView.text) { (success, firstFoundObjId, errMsg, hasExisting) in
+            if let exists = hasExisting where exists == true && firstFoundObjId != nil{
                 dispatch_async(dispatch_get_main_queue()) {
-                    let alert = UIAlertController()
-                    let okAction = UIAlertAction(title: "Add Additional", style: .Destructive ) { action in
-                        //TODO: REALLY submit a new pin to the server
+                    let alert = UIAlertController(title: "Duplication Alert", message: "There are already Locations for this User", preferredStyle: .Alert)
+                    let okAction = UIAlertAction(title: "Overwrite", style: .Destructive ) { action in
+                        self.updateExistingLocation(firstFoundObjId!)
+                    }
+                    let cancelAction = UIAlertAction(title: "Add Additional", style: .Default ) { action in
                         self.saveNewLocation()
                     }
-                    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
                     alert.addAction(okAction)
                     alert.addAction(cancelAction)
+                    self.presentViewController(alert, animated: true, completion: nil)
                 }
             } else {
                 dispatch_async(dispatch_get_main_queue(), { self.saveNewLocation() })
@@ -116,23 +121,62 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
         }
     }
     
-    func saveNewLocation() {
+    func updateExistingLocation(objectId: String) {
+        //by OBJECT ID..
         let app = UIApplication.sharedApplication().delegate as! AppDelegate
         guard let uid = app.UdacityUserId else {
-            //TODO: tell user didn't work..
+            displayPinUploadAlertError()
             return
         }
         guard let lat = currentPinLatitude, let lon = currentPinLongitude else {
-            //TODO: tell user could not map your location..
+            displayPinUploadAlertError()
+            return
+        }
+        var location = StudentLocation()
+        location.objectId = objectId
+        location.uniqueKey = uid
+        location.latitude =  Float(lat)
+        location.longitude = Float(lon)
+        location.mapString = locationEntryTextView.text
+        location.mediaURL = mediaURLTextView.text
+        location.firstName = app.UdacityUserFirstName
+        location.lastName = app.UdacityUserLastName
+        StudentLocations.sharedInstance.updateLocation(location) { (success, errMessage) in
+            if success {
+                dispatch_async(dispatch_get_main_queue(), { self.dismissViewControllerAnimated(true, completion: nil) })
+            } else {
+                dispatch_async(dispatch_get_main_queue(), { self.displayPinUploadAlertError() })
+            }
+        }
+
+        
+    }
+    
+    func saveNewLocation() {
+        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        guard let uid = app.UdacityUserId else {
+            displayPinUploadAlertError()
+            return
+        }
+        guard let lat = currentPinLatitude, let lon = currentPinLongitude else {
+            displayPinUploadAlertError()
             return
         }
         var newLocation = StudentLocation()
-        newLocation.objectId = uid
+        newLocation.uniqueKey = uid
         newLocation.latitude =  Float(lat)
         newLocation.longitude = Float(lon)
         newLocation.mapString = locationEntryTextView.text
         newLocation.mediaURL = mediaURLTextView.text
-        
+        newLocation.firstName = app.UdacityUserFirstName
+        newLocation.lastName = app.UdacityUserLastName
+        StudentLocations.sharedInstance.addLocation(newLocation) { (success, errMessage) in
+            if success {
+                dispatch_async(dispatch_get_main_queue(), { self.dismissViewControllerAnimated(true, completion: nil) })
+            } else {
+                dispatch_async(dispatch_get_main_queue(), { self.displayPinUploadAlertError() })
+            }
+        }
         
     }
     
@@ -140,11 +184,6 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    //Mark: DATA OBSERVER
-    func refresh() { }
-    func add(newItem: AnyObject, indexPath: NSIndexPath) {
-        //TODO: some sort of feedback that the data was saved to the
-    }
     
     //Mark: UITextViewDelegates
     func textViewDidBeginEditing(textView: UITextView) {
@@ -162,6 +201,13 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     
     
     //MARK: helper methods
+    func displayPinUploadAlertError() {
+        let alert = UIAlertController()
+        let okAction = UIAlertAction(title: "New Location Could Not Be Saved", style: .Default, handler: nil)
+        alert.addAction(okAction)
+        presentViewController(alert, animated: true, completion: nil)
+    }
+    
     func handleSingleTap(recognizer: UITapGestureRecognizer) {
         view.endEditing(true)
     }

@@ -33,8 +33,8 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
     }
     //MARK: helper functions
     func downloadFailureAlert() {
-        let alert = UIAlertController()
-        let okAction = UIAlertAction(title: "Student Data Failed to Download", style: .Default, handler: nil)
+        let alert = UIAlertController(title: "Data Alert", message: "Student Data Failed to Download", preferredStyle: .Alert)
+        let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
         alert.addAction(okAction)
         presentViewController(alert, animated: true, completion: nil)
     }
@@ -60,7 +60,9 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
         let cell = tableView.dequeueReusableCellWithIdentifier(CELL_ID)!
         let locations = StudentLocations.sharedInstance.locations()
         cell.textLabel?.text = "\(locations[indexPath.row].firstName ?? "") \(locations[indexPath.row].lastName ?? "")"
-        cell.detailTextLabel?.text = locations[indexPath.row].updatedAt
+        cell.detailTextLabel?.text = "@\(locations[indexPath.row].mapString ?? "")"
+        //cell.backgroundView = UIImage(named: ??)
+        //cell.selectedBackgroundView = UIImage(named: ??)
         return cell
     }
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -73,9 +75,9 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
             self.tableView.reloadData()
         })
     }
-    func add(newItem: AnyObject, indexPath: NSIndexPath) {
+    func add(newItem: Any, indexPath: NSIndexPath) {
         if let _ = newItem as? StudentLocation {
-            tableView.insertRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            tableView.reloadData()
         }
     }
     //MARK UITableViewDelegate

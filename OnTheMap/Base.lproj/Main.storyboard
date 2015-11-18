@@ -254,7 +254,7 @@
                                 <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="StudentCell" textLabel="F1R-kk-Qqq" imageView="LX4-zy-YQc" rowHeight="45" style="IBUITableViewCellStyleDefault" id="6uZ-r9-jUS">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="StudentCell" textLabel="F1R-kk-Qqq" detailTextLabel="qAG-91-qYL" imageView="LX4-zy-YQc" rowHeight="45" style="IBUITableViewCellStyleSubtitle" id="6uZ-r9-jUS">
                                         <rect key="frame" x="0.0" y="28" width="375" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="6uZ-r9-jUS" id="sL3-ic-vql">
@@ -262,7 +262,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="F1R-kk-Qqq">
-                                                    <rect key="frame" x="62" y="0.0" width="298" height="44.5"/>
+                                                    <rect key="frame" x="62" y="6" width="31.5" height="19.5"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -274,6 +274,14 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <animations/>
                                                 </imageView>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qAG-91-qYL">
+                                                    <rect key="frame" x="62" y="25.5" width="40.5" height="13.5"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <animations/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <animations/>
                                         </tableViewCellContentView>
@@ -334,6 +342,10 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Pk2-e0-PEH">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="z1h-GF-YtO">
+                                        <rect key="frame" x="177" y="324" width="20" height="20"/>
+                                        <animations/>
+                                    </activityIndicatorView>
                                     <label opaque="NO" userInteractionEnabled="NO" alpha="0.75" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where are you" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pZe-uL-hS6">
                                         <rect key="frame" x="0.0" y="49" width="375" height="36"/>
                                         <animations/>
@@ -400,6 +412,7 @@
                                 <color key="backgroundColor" red="0.85098039215686272" green="0.84705882352941175" blue="0.83529411764705885" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="O3U-O2-od1" firstAttribute="leading" secondItem="Pk2-e0-PEH" secondAttribute="leading" id="0mi-7x-hyY"/>
+                                    <constraint firstItem="z1h-GF-YtO" firstAttribute="centerX" secondItem="Pk2-e0-PEH" secondAttribute="centerX" id="3gO-Rs-ooS"/>
                                     <constraint firstAttribute="trailing" secondItem="O3U-O2-od1" secondAttribute="trailing" id="4D3-T1-jUW"/>
                                     <constraint firstItem="4Sj-Il-GV0" firstAttribute="top" secondItem="4mu-tV-zgh" secondAttribute="bottom" constant="-4" id="6B4-2K-ey4"/>
                                     <constraint firstItem="oWx-fQ-Xli" firstAttribute="leading" secondItem="Pk2-e0-PEH" secondAttribute="leading" constant="60" id="6Ji-Yb-I4N"/>
@@ -417,6 +430,7 @@
                                     <constraint firstItem="pZe-uL-hS6" firstAttribute="top" secondItem="pA6-or-lGa" secondAttribute="bottom" id="gTc-jF-oaJ"/>
                                     <constraint firstItem="pA6-or-lGa" firstAttribute="top" secondItem="Pk2-e0-PEH" secondAttribute="top" constant="13" id="lU4-7v-eLG"/>
                                     <constraint firstAttribute="trailing" secondItem="oWx-fQ-Xli" secondAttribute="trailing" constant="60" id="taY-RF-BCq"/>
+                                    <constraint firstItem="z1h-GF-YtO" firstAttribute="centerY" secondItem="Pk2-e0-PEH" secondAttribute="centerY" id="xnw-Jy-Ksy"/>
                                     <constraint firstAttribute="trailing" secondItem="pZe-uL-hS6" secondAttribute="trailing" id="yWZ-30-hIy"/>
                                 </constraints>
                                 <variation key="default">
@@ -502,6 +516,7 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
+                        <outlet property="activityIndicator" destination="z1h-GF-YtO" id="O77-GC-0l5"/>
                         <outlet property="findPinView" destination="Pk2-e0-PEH" id="lXC-bS-h7K"/>
                         <outlet property="locationEntryTextView" destination="O3U-O2-od1" id="avz-dO-2AP"/>
                         <outlet property="mainMap" destination="5ib-Hm-9X9" id="y3j-BF-Haz"/>

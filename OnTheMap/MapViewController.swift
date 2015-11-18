@@ -58,8 +58,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
         self.mainMap.addAnnotations(annotations)
     }
     func downloadFailureAlert() {
-        let alert = UIAlertController()
-        let okAction = UIAlertAction(title: "Student Data Failed to Download", style: .Default, handler: nil)
+        let alert = UIAlertController(title: "Data Alert", message: "Student Data Failed to Download", preferredStyle: .Alert)
+        let okAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
         alert.addAction(okAction)
         presentViewController(alert, animated: true, completion: nil)
     }
@@ -85,7 +85,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
     func refresh() {
         dispatch_async(dispatch_get_main_queue(), { self.loadPins() })
     }
-    func add(newItem: AnyObject, indexPath: NSIndexPath) {
+    func add(newItem: Any, indexPath: NSIndexPath) {
         if let newLocation = newItem as? StudentLocation {
             guard let lat = newLocation.latitude, let long = newLocation.longitude else {
                 return
@@ -96,8 +96,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
             
             newPin.title = "\(newLocation.firstName ?? "") \(newLocation.lastName ?? "")"
             newPin.subtitle = newLocation.mediaURL
-            
             mainMap.addAnnotation(newPin)
+            //center the map on this new location
+            mainMap.centerCoordinate = coordinate
         }
     }
     

@@ -10,5 +10,5 @@ import Foundation
 
 protocol DataObserver {
     func refresh()
-    func add(newItem: AnyObject, indexPath: NSIndexPath)
+    func add(newItem: Any, indexPath: NSIndexPath)
 }
