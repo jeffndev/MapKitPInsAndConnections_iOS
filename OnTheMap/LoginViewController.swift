@@ -14,18 +14,34 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
+    var tapRecognizer: UITapGestureRecognizer?
+    var keyboardAdjusted = false
+
+    
+    //MARK: Lifecycle overrides..
     override func viewDidLoad() {
-        
         let leftSpacerFrame = CGRectMake(0.0, 0.0, 13.0, 0.0)
         emailTextField.leftView = UIView(frame: leftSpacerFrame)
         emailTextField.leftViewMode = .Always
         passwordTextField.leftView = UIView(frame: leftSpacerFrame)
         passwordTextField.leftViewMode = .Always
         
-        //TODO: use imageEdgeInset and titleEdgeInset on the facebookLoginButton to add the facebook logo to the right side
-        //
+        tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
+        tapRecognizer?.numberOfTapsRequired = 1
+    }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        view.addGestureRecognizer(tapRecognizer!)
+        registerForKeyboardNotifications()
+    }
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        view.removeGestureRecognizer(tapRecognizer!)
+        unregisterForKeyboardNotifications()
     }
     
+    
+    //MARK: Actions...
     @IBAction func udacitySignUpAction(sender: UIButton) {
         
         if let udacitySignUpUrl = NSURL(string: UdacityProvider.SIGNUP_URL_STRING) {
@@ -50,9 +66,20 @@ class LoginViewController: UIViewController {
             return
         }
         passwordTextField.placeholder = oldPlaceholder
-        
-        UdacityProvider.loginAction(emailText, password: passwordText) { (success, errMsg, handlerType) in
-            if success == true {
+        let provider = UdacityProvider()
+        provider.loginAction(emailText, password: passwordText) { (success, errMsg, handlerType) in
+            if success == true && provider.UserIDKey != nil {
+                let app = UIApplication.sharedApplication().delegate as! AppDelegate
+                //setup the App Global Session and User Id for this user...
+                app.UdacityUserId = provider.UserIDKey!
+                app.UdacitySessionId = provider.SessionID
+                //NOW send off, asynchronously, for more of the public data for user in future calls to Add data later on..
+                provider.fetchPublicUserInfo(provider.UserIDKey!) { (success, errMsg, handlerType) in
+                    app.UdacityUserFirstName = provider.UserFirstName
+                    app.UdacityUserLastName = provider.UserLastName
+                    app.Udacity_FacebookID = provider.UserFacebookId
+                }
+                //now Enter the app....
                 dispatch_async(dispatch_get_main_queue()) {
                     let vc = self.storyboard!.instantiateViewControllerWithIdentifier("MainTabScreen") as! UITabBarController
                     self.presentViewController(vc, animated: true, completion: nil)
@@ -75,5 +102,36 @@ class LoginViewController: UIViewController {
             }
         }
     }
-        
+    
+    //MARK: helper functions
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        view.endEditing(true)
+    }
+    func keyboardWillShow(notification: NSNotification) {
+        if !keyboardAdjusted {
+            self.view.superview?.frame.origin.y -= getKeyboardHeight(notification)/2
+            keyboardAdjusted = true
+        }
+    }
+    func keyboardWillHide(notification: NSNotification) {
+        if keyboardAdjusted {
+            self.view.superview?.frame.origin.y += getKeyboardHeight(notification)/2
+            keyboardAdjusted = false
+        }
+    }
+    func getKeyboardHeight(notification: NSNotification) -> CGFloat {
+        let userInfo = notification.userInfo
+        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+        return keyboardSize.CGRectValue().height
+    }
+    
+    func registerForKeyboardNotifications(){
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+    }
+    func unregisterForKeyboardNotifications(){
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+    }
+
 }

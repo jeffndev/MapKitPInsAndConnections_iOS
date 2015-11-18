@@ -9,13 +9,31 @@
 import Foundation
 
 class ParseProvider {
+    
+    // MARK: Parameter Keys
+    struct ParameterKeys {
+        
+        static let WhereKey = "where"
+        static let LimitKey = "limit"
+        static let OrderKey = "order"
+    }
+    struct WhereQueryKeys {
+        static let UserIDKey = "uniqueKey"
+        static let FirstName = "firstName"
+        static let LastName = "lastName"
+    }
+    
     let APPLICATION_ID = "QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr"
     let API_KEY = "QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY"
     let BASE_API_URL_STRING = "https://api.parse.com/1/classes/"
     
     var locations = [StudentLocation]()
     
-    //func getSharedStudentLocations() -> [StudentLocation] { return locations }
+    func buildWhereQueryStringValue(whereClauses: [String: AnyObject]) ->String? {
+        //TODO:.. { "key": "val", "key": "val", ...}
+        return nil
+    }
+    
     /*
     "results":[
     {
@@ -44,67 +62,70 @@ class ParseProvider {
     },
     */
 
-    func fetchStudentLocations(doRefresh: Bool = false, limitNumRecords: Int = 100, completion: (success: Bool, errorMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?)-> Void) {
-        if locations.count > 0 && doRefresh == false {
-            completion(success: true, errorMessage: nil, handleStatus: nil)
+    func fetchStudentLocations(limitNumRecords: Int = 100, optionalParams: [String: AnyObject]? = nil, completion: (success: Bool, errorMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?)-> Void) {
+        
+        let GET_STUDENT_LOCATIONS_METHOD = "StudentLocation"
+        var restParams: [String: AnyObject] = [ParameterKeys.LimitKey: limitNumRecords,
+                                               ParameterKeys.OrderKey: "-updatedAt"]
+        if let extraParams = optionalParams {
+            for (key, val) in extraParams {
+                restParams[key] = "\(val)"
+            }
+        }
+        let requestString: String = BASE_API_URL_STRING + GET_STUDENT_LOCATIONS_METHOD + RESTApiHelpers.assembleRestParamaters(restParams)
+        
+        guard let requestUrl = NSURL(string: requestString) else {
+            print("could not build url from \(requestString)")
+            completion(success: false, errorMessage: "could not build url from \(requestString)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
             return
-        } else {
-            let GET_STUDENT_LOCATIONS_METHOD = "StudentLocation"
-            let restParams: [String: AnyObject] = ["limit": limitNumRecords, "order": "-updatedAt"]
-            let requestString: String = BASE_API_URL_STRING + GET_STUDENT_LOCATIONS_METHOD + RESTApiHelpers.assembleRestParamaters(restParams)
-            print(requestString)
-            guard let requestUrl = NSURL(string: requestString) else {
-                print("could not build url from \(requestString)")
-                completion(success: false, errorMessage: "could not build url from \(requestString)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+        }
+        let request = NSMutableURLRequest(URL: requestUrl)
+        request.HTTPMethod = "GET"
+        request.addValue(APPLICATION_ID, forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue(API_KEY, forHTTPHeaderField: "X-Parse-REST-API-Key")
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { (data, response, error) in
+            guard (error == nil) else {
+                completion(success: false, errorMessage: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 return
             }
-            let request = NSMutableURLRequest(URL: requestUrl)
-            request.HTTPMethod = "GET"
-            request.addValue(APPLICATION_ID, forHTTPHeaderField: "X-Parse-Application-Id")
-            request.addValue(API_KEY, forHTTPHeaderField: "X-Parse-REST-API-Key")
-            let session = NSURLSession.sharedSession()
-            let task = session.dataTaskWithRequest(request) { (data, response, error) in
-                guard (error == nil) else {
-                    completion(success: false, errorMessage: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
-                    return
+            
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                if let response = response as? NSHTTPURLResponse {
+                    completion(success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                } else if let response = response {
+                    completion(success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                } else {
+                    completion(success: false, errorMessage: "Your request returned an invalid response!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 }
-                
-                guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                    if let response = response as? NSHTTPURLResponse {
-                        completion(success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
-                    } else if let response = response {
-                        completion(success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
-                    } else {
-                        completion(success: false, errorMessage: "Your request returned an invalid response!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
-                    }
-                    return
-                }
-                
-                guard let data = data else {
-                    completion(success: false, errorMessage: "Request data returned empty", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
-                    return
-                }
-                
-                var parsedResult: AnyObject!
-                do {
-                    parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
-                } catch {
-                    completion(success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
-                    return
-                }
-                //now start parsing it out and get those locations!
-                guard let locationObjects = parsedResult["results"] as? [[String: AnyObject]] else {
-                    completion(success: false, errorMessage: "Could not parse the Results from the JSON returned", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
-                    return
-                }
-                
-                for loc in locationObjects {
-                    self.locations.append(StudentLocation(json: loc))
-                }
-                completion(success: true, errorMessage: nil, handleStatus: nil)
+                return
             }
-            task.resume()
+            
+            guard let data = data else {
+                completion(success: false, errorMessage: "Request data returned empty", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                return
+            }
+            
+            var parsedResult: AnyObject!
+            do {
+                parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            } catch {
+                completion(success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                return
+            }
+            print(parsedResult)
+            //now start parsing it out and get those locations!
+            guard let locationObjects = parsedResult["results"] as? [[String: AnyObject]] else {
+                completion(success: false, errorMessage: "Could not parse the Results from the JSON returned", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                return
+            }
+            
+            for loc in locationObjects {
+                self.locations.append(StudentLocation(json: loc))
+            }
+            completion(success: true, errorMessage: nil, handleStatus: nil)
         }
+        task.resume()
     }
     
 }

@@ -12,6 +12,12 @@ class UdacityProvider {
     static let SIGNUP_URL_STRING = "https://www.udacity.com/account/auth#!/signup"
     private static let BASE_API_URL_STRING = "https://www.udacity.com/api/"
     
+    var UserIDKey: String?
+    var SessionID: String?
+    var UserFirstName: String?
+    var UserLastName: String?
+    var UserFacebookId: String?
+    
     
     /* SAMPLE DATA
     {
@@ -25,7 +31,7 @@ class UdacityProvider {
     }
     }
     */
-    static func loginAction(email: String, password: String, completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
+    func loginAction(email: String, password: String, completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
         let LOGIN_SESSION_METHOD = "session"
         
         let requestString = UdacityProvider.BASE_API_URL_STRING + LOGIN_SESSION_METHOD
@@ -95,13 +101,21 @@ class UdacityProvider {
                 completion(success: false, errMsg: "Could not find a user id", handleStatus: nil)
                 return
             }
-            
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-            appDelegate.UdacityUserId = udacityUserId
+            self.UserIDKey = udacityUserId
+            if let sessionInfo = parsedResult["session"] as? [String: AnyObject] {
+                if let sessionId = sessionInfo["id"] as? String {
+                    self.SessionID = sessionId
+                }
+            }
             completion(success: true, errMsg: nil, handleStatus: nil)
         }
         
         task.resume()
     }
     
+    //TODO: have to fetch user data from Udacity
+    func fetchPublicUserInfo(userId: String, completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
+        
+        
+    }
 }

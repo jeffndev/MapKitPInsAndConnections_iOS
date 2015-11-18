@@ -59,8 +59,8 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CELL_ID)!
         let locations = StudentLocations.sharedInstance.locations()
-        cell.textLabel?.text = "\(locations[indexPath.row].firstName) \(locations[indexPath.row].lastName)"
-        cell.detailTextLabel?.text = "\(locations[indexPath.row].updatedAt)"
+        cell.textLabel?.text = "\(locations[indexPath.row].firstName ?? "") \(locations[indexPath.row].lastName ?? "")"
+        cell.detailTextLabel?.text = locations[indexPath.row].updatedAt
         return cell
     }
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

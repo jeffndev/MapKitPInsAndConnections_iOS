@@ -42,14 +42,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
         self.mainMap.removeAnnotations(self.mainMap.annotations)
 
         for l in locations {
-            let lat = CLLocationDegrees(l.latitude)
-            let long = CLLocationDegrees(l.longitude)
+            guard let lat = l.latitude, let long = l.longitude  else {
+                continue
+            }
             
-            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            let coordinate = CLLocationCoordinate2D(latitude: CLLocationDegrees(lat), longitude: CLLocationDegrees(long))
             
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
-            annotation.title = "\(l.firstName) \(l.lastName)"
+            annotation.title = "\(l.firstName ?? "") \(l.lastName ?? "")"
             annotation.subtitle = l.mediaURL
             
             annotations.append(annotation)
@@ -86,12 +87,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
     }
     func add(newItem: AnyObject, indexPath: NSIndexPath) {
         if let newLocation = newItem as? StudentLocation {
+            guard let lat = newLocation.latitude, let long = newLocation.longitude else {
+                return
+            }
             let newPin = MKPointAnnotation()
-            let lat = CLLocationDegrees(newLocation.latitude)
-            let long = CLLocationDegrees(newLocation.longitude)
-            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            let coordinate = CLLocationCoordinate2D(latitude: CLLocationDegrees(lat), longitude: CLLocationDegrees(long))
             newPin.coordinate = coordinate
-            newPin.title = "\(newLocation.firstName) \(newLocation.lastName)"
+            
+            newPin.title = "\(newLocation.firstName ?? "") \(newLocation.lastName ?? "")"
             newPin.subtitle = newLocation.mediaURL
             
             mainMap.addAnnotation(newPin)

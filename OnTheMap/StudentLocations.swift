@@ -6,7 +6,7 @@
 //  Copyright © 2015 Jeff Newell. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class StudentLocations {
     static let sharedInstance = StudentLocations()
@@ -17,7 +17,8 @@ class StudentLocations {
     
     func registerObserver(observer: DataObserver) { observers.append(observer) }
     func locations() ->[StudentLocation] { return mLocations }
-    func isPopulated() -> Bool { return mLocations.count > 0 }
+    func isPopulated() -> Bool { return !mLocations.isEmpty }
+    
     func fetchLocations(completion: (success:Bool) -> Void) {
         //an async task
         let provider = ParseProvider()
@@ -30,11 +31,27 @@ class StudentLocations {
             completion(success: success)
         }
     }
-    func checkForExistingLocation(loc: StudentLocation) {
-        //TODO:
+    func checkForExistingLocationForStudent( completion: (success: Bool, errorMessage: String?, hasExisting: Bool?) -> Void) {
+        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        guard let uid = app.UdacityUserId else {
+            completion(success: false, errorMessage: "Could not find users UdacityUserId", hasExisting: nil)
+            return
+        }
+        //probably want to push this logic/syntax for building the where string into the Provider..
+        let extraParam = [ParseProvider.ParameterKeys.WhereKey: "{\"uniqueKey\": \"\(uid)\"}"]
+        let provider = ParseProvider()
+        provider.fetchStudentLocations(1, optionalParams: extraParam) { (success, errorMessage, handleStatus) in
+            if success {
+                completion(success: success, errorMessage: nil, hasExisting: !provider.locations.isEmpty)
+            } else {
+                completion(success: success, errorMessage: errorMessage, hasExisting: nil)
+            }
+        }
     }
     
     func addLocation(newLocation: StudentLocation) {
+        
+        
         //TODO:
 //        ParseProvider.addLocation(newLocation) { (success, errorMessage) in
 //            if success {

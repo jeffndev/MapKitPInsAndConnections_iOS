@@ -18,9 +18,16 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     @IBOutlet weak var locationEntryTextView: UITextView!
     @IBOutlet weak var mainMap: MKMapView!
     
+    var tapRecognizer: UITapGestureRecognizer?
+    //var keyboardAdjusted = false
+    
     let MAP_LOCAL_ZOOM_WIDTH = 2000.0
     
-    let placeholderTextMap = [1: "Enter your location here", 2: "Enter your Url here"]
+    let placeholderTextMap = [1: "Enter Your Location Here", 2: "Enter a Link to Share Here"]
+    
+    var currentPinLatitude: CLLocationDegrees?
+    var currentPinLongitude: CLLocationDegrees?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,23 +43,25 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
         mediaURLTextView.text = placeholderTextMap[mediaURLTextView.tag]!
         mediaURLTextView.textColor = UIColor.lightGrayColor()
         //
-        
+        tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
+        tapRecognizer?.numberOfTapsRequired = 1
         
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         findPinView.hidden = false
         submitPinView.hidden = true
+        view.addGestureRecognizer(tapRecognizer!)
+        //registerForKeyboardNotifications()
     }
-    /*
-    var address = "1 Infinite Loop, CA, USA"
-    var geocoder = CLGeocoder()
-    geocoder.geocodeAddressString(address, {(placemarks: [AnyObject]!, error: NSError!) -> Void in
-    if let placemark = placemarks?[0] as? CLPlacemark {
-    self.mapView.addAnnotation(MKPlacemark(placemark: placemark))
+
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        view.removeGestureRecognizer(tapRecognizer!)
+        //unregisterForKeyboardNotifications()
     }
-    })
-    */
+
+   
     @IBAction func findOnTheMap() {
         let geoText = locationEntryTextView.text
         let g = CLGeocoder()
@@ -63,6 +72,8 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
                     let loc = place.location
                     if let coord2ds = loc?.coordinate {
                         //create an annotation and add to map...
+                        self.currentPinLatitude = coord2ds.latitude
+                        self.currentPinLongitude = coord2ds.longitude
                         let annotation = MKPointAnnotation()
                         annotation.coordinate = coord2ds
                         self.mainMap.addAnnotation(annotation)
@@ -86,11 +97,43 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     }
     
     @IBAction func submitPinAction(sender: UIButton) {
-        //TODO: deal with a simpler constuctor for StudentLocation, only have coords, name and a mediaURL
-        //let newLocationPin =
-        //
-        //StudentLocations.sharedInstance.addLocation(newLocationPin)
-        dismissViewControllerAnimated(true, completion: nil)
+        
+        StudentLocations.sharedInstance.checkForExistingLocationForStudent() { (success, errMsg, hasExisting) in
+            if let exists = hasExisting where exists == true {
+                dispatch_async(dispatch_get_main_queue()) {
+                    let alert = UIAlertController()
+                    let okAction = UIAlertAction(title: "Add Additional", style: .Destructive ) { action in
+                        //TODO: REALLY submit a new pin to the server
+                        self.saveNewLocation()
+                    }
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+                    alert.addAction(okAction)
+                    alert.addAction(cancelAction)
+                }
+            } else {
+                dispatch_async(dispatch_get_main_queue(), { self.saveNewLocation() })
+            }
+        }
+    }
+    
+    func saveNewLocation() {
+        let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        guard let uid = app.UdacityUserId else {
+            //TODO: tell user didn't work..
+            return
+        }
+        guard let lat = currentPinLatitude, let lon = currentPinLongitude else {
+            //TODO: tell user could not map your location..
+            return
+        }
+        var newLocation = StudentLocation()
+        newLocation.objectId = uid
+        newLocation.latitude =  Float(lat)
+        newLocation.longitude = Float(lon)
+        newLocation.mapString = locationEntryTextView.text
+        newLocation.mediaURL = mediaURLTextView.text
+        
+        
     }
     
     @IBAction func cancelAction(sender: UIButton) {
@@ -116,4 +159,37 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
             textView.textColor = UIColor.lightGrayColor()
         }
     }
+    
+    
+    //MARK: helper methods
+    func handleSingleTap(recognizer: UITapGestureRecognizer) {
+        view.endEditing(true)
+    }
+//    func keyboardWillShow(notification: NSNotification) {
+//        if !keyboardAdjusted {
+//            self.view.superview?.frame.origin.y -= getKeyboardHeight(notification)/2
+//            keyboardAdjusted = true
+//        }
+//    }
+//    func keyboardWillHide(notification: NSNotification) {
+//        if keyboardAdjusted {
+//            self.view.superview?.frame.origin.y += getKeyboardHeight(notification)/2
+//            keyboardAdjusted = false
+//        }
+//    }
+//    func getKeyboardHeight(notification: NSNotification) -> CGFloat {
+//        let userInfo = notification.userInfo
+//        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+//        return keyboardSize.CGRectValue().height
+//    }
+//    
+//    func registerForKeyboardNotifications(){
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+//    }
+//    func unregisterForKeyboardNotifications(){
+//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+//    }
+
 }

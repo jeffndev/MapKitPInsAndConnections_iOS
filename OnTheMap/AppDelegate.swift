@@ -14,6 +14,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     var UdacityUserId: String?
+    var UdacitySessionId: String?
+    var UdacityUserFirstName: String?
+    var UdacityUserLastName: String?
+    var Udacity_FacebookID: String?
     
     enum ErrorsForUserFeedback {
         case AUTHENTICATION_EXCEPTION
