@@ -19,7 +19,7 @@ class UdacityUserCredentials {
     
     func login(email: String, password: String, completion: (success: Bool, errMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) ->Void) {
         let provider = UdacityProvider()
-        provider.loginAction(email, password: password) { (success, errMsg, handleType) in
+        provider.loginDirect(email, password: password) { (success, errMsg, handleType) in
             if success && provider.UserIDKey != nil {
                 self.UserId = provider.UserIDKey
                 self.SessionId = provider.SessionID
@@ -33,5 +33,20 @@ class UdacityUserCredentials {
             completion(success: success, errMessage: errMsg, handleStatus: handleType)
         }
     }
-    
+    func facebookLogin(mobileToken: String, completion: (success: Bool, errMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) ->Void) {
+        let provider = UdacityProvider()
+        provider.facebookLogin(mobileToken) { (success, errMsg, handleType) in
+            if success && provider.UserIDKey != nil {
+                self.UserId = provider.UserIDKey
+                self.SessionId = provider.SessionID
+                provider.fetchPublicUserInfo(provider.UserIDKey!) { (success, errMsg, handlerType) in
+                    self.UserFirstName = provider.UserFirstName
+                    self.UserLastName = provider.UserLastName
+                    self.FacebookConnectID = provider.UserFacebookId
+                }
+                
+            }
+            completion(success: success, errMessage: errMsg, handleStatus: handleType)
+        }
+    }
 }

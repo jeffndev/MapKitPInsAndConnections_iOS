@@ -31,7 +31,17 @@ class UdacityProvider {
     }
     }
     */
-    func loginAction(email: String, password: String, completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
+    
+    func loginDirect(email: String, password: String, completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void ){
+        let postParameters = "{\"udacity\": {\"username\": \"\(email)\", \"password\": \"\(password)\"}}"
+        loginAction(postParameters, completion: completion)
+    }
+    func facebookLogin(fbookToken: String, completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
+        let postParameters = "{\"facebook_mobile\": {\"access_token\": \"\(fbookToken)\"}}"
+        loginAction(postParameters, completion: completion)
+    }
+    
+    private func loginAction(loginPayloadForPOST: String, completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
         let LOGIN_SESSION_METHOD = "session"
         
         let requestString = UdacityProvider.BASE_API_URL_STRING + LOGIN_SESSION_METHOD
@@ -43,8 +53,8 @@ class UdacityProvider {
         request.HTTPMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let postParameters = "{\"udacity\": {\"username\": \"\(email)\", \"password\": \"\(password)\"}}"
-        request.HTTPBody = postParameters.dataUsingEncoding(NSUTF8StringEncoding)
+        
+        request.HTTPBody = loginPayloadForPOST.dataUsingEncoding(NSUTF8StringEncoding)
         
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { (data, response, error) in

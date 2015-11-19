@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import FBSDKLoginKit
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     
-    @IBOutlet weak var facebookLoginButton: UIButton!
+    @IBOutlet weak var udacityLoginButton: UIButton!
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
@@ -28,7 +29,21 @@ class LoginViewController: UIViewController {
         
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
         tapRecognizer?.numberOfTapsRequired = 1
+        
+        //setup facebook login button...
+        let fbookLogin = FBSDKLoginButton()
+        fbookLogin.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(fbookLogin)
+        let alignLeadingToLoginBtn = NSLayoutConstraint(item: fbookLogin, attribute: .Leading, relatedBy: .Equal, toItem: udacityLoginButton, attribute: .Leading, multiplier: 1.0, constant: 0.0)
+        let alignTrailingToLoginBtn = NSLayoutConstraint(item: fbookLogin, attribute: .Trailing, relatedBy: .Equal, toItem: udacityLoginButton, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
+        let pinToBottonLayout = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: fbookLogin , attribute: .BottomMargin, multiplier: 1.0, constant: 26.0)
+        let btnHeight = NSLayoutConstraint(item: fbookLogin, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 40.0)
+        
+        fbookLogin.readPermissions = ["public_profile", "email", "user_friends"]
+        fbookLogin.delegate = self
+        NSLayoutConstraint.activateConstraints([alignLeadingToLoginBtn, alignTrailingToLoginBtn, pinToBottonLayout, btnHeight])
     }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         view.addGestureRecognizer(tapRecognizer!)
@@ -47,10 +62,6 @@ class LoginViewController: UIViewController {
             UIApplication.sharedApplication().openURL(udacitySignUpUrl)
         }
     }
-    @IBAction func facebookSignInAction(sender: UIButton) {
-        //TODO:
-    }
-    
     
     @IBAction func loginAction(sender: UIButton) {
         var oldPlaceholder = emailTextField!.placeholder
@@ -88,6 +99,47 @@ class LoginViewController: UIViewController {
                 }
             }
         }
+    }
+    //FacebookLogin Delegates
+    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+        //print(FBSDKSettings.sdkVersion())
+        guard let token = FBSDKAccessToken.currentAccessToken() else {
+            let alert = UIAlertController(title: "Facebook Login Alert", message: "Could not authenticate with Facebook.", preferredStyle: .Alert)
+            let okAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+            alert.addAction(okAction)
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+        UdacityUserCredentials.sharedInstance.facebookLogin(token.tokenString) { (success, errMsg, handlerType) in
+            if success {
+                dispatch_async(dispatch_get_main_queue()) {
+                    let vc = self.storyboard!.instantiateViewControllerWithIdentifier("MainTabScreen") as! UITabBarController
+                    self.presentViewController(vc, animated: true, completion: nil)
+                }
+            } else {
+                if let customErrorType = handlerType where [AppDelegate.ErrorsForUserFeedback.FAILED_NETWORK, AppDelegate.ErrorsForUserFeedback.AUTHENTICATION_EXCEPTION].contains(customErrorType){
+                    dispatch_async(dispatch_get_main_queue()){
+                        var shortMsg: String
+                        if customErrorType == AppDelegate.ErrorsForUserFeedback.AUTHENTICATION_EXCEPTION {
+                            shortMsg = "Udacity Login Failure, Sign-up if no account."
+                        } else {
+                            shortMsg = "Network Failure, could not Login to Udacity."
+                        }
+                        let alert = UIAlertController(title: "Login Alert", message: shortMsg, preferredStyle: .Alert)
+                        let okAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+                        alert.addAction(okAction)
+                        self.presentViewController(alert, animated: true, completion: nil)
+                    }
+                }
+            }
+        }
+
+    }
+    func loginButtonWillLogin(loginButton: FBSDKLoginButton!) -> Bool {
+        return true
+    }
+    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+        //empty
     }
     
     //MARK: helper functions

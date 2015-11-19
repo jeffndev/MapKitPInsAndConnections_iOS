@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BD005E4E1BFE512D0068FAE4 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD005E4D1BFE512D0068FAE4 /* FBSDKCoreKit.framework */; };
+		BD005E501BFE585F0068FAE4 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD005E4F1BFE585F0068FAE4 /* FBSDKLoginKit.framework */; };
 		BD4164BE1BF549C700A8C6E0 /* StudentsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4164BD1BF549C700A8C6E0 /* StudentsTableViewController.swift */; };
 		BD4A9FCF1BF28F27004E6C15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4A9FCE1BF28F27004E6C15 /* AppDelegate.swift */; };
 		BD4A9FD41BF28F27004E6C15 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD4A9FD21BF28F27004E6C15 /* Main.storyboard */; };
@@ -25,6 +27,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BD005E4D1BFE512D0068FAE4 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		BD005E4F1BFE585F0068FAE4 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		BD4164BD1BF549C700A8C6E0 /* StudentsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentsTableViewController.swift; sourceTree = "<group>"; };
 		BD4A9FCB1BF28F27004E6C15 /* OnTheMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnTheMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD4A9FCE1BF28F27004E6C15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -49,12 +53,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD005E501BFE585F0068FAE4 /* FBSDKLoginKit.framework in Frameworks */,
+				BD005E4E1BFE512D0068FAE4 /* FBSDKCoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BD005E4A1BFE492D0068FAE4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BD005E4F1BFE585F0068FAE4 /* FBSDKLoginKit.framework */,
+				BD005E4D1BFE512D0068FAE4 /* FBSDKCoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		BD4A9FC21BF28F27004E6C15 = {
 			isa = PBXGroup;
 			children = (
@@ -84,6 +99,7 @@
 				BD4A9FD51BF28F27004E6C15 /* Assets.xcassets */,
 				BD4A9FD71BF28F27004E6C15 /* LaunchScreen.storyboard */,
 				BD4A9FDA1BF28F27004E6C15 /* Info.plist */,
+				BD005E4A1BFE492D0068FAE4 /* Frameworks */,
 			);
 			path = OnTheMap;
 			sourceTree = "<group>";
@@ -330,6 +346,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/OnTheMap",
+				);
 				INFOPLIST_FILE = OnTheMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -345,6 +365,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/OnTheMap",
+				);
 				INFOPLIST_FILE = OnTheMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
