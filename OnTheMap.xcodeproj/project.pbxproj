@@ -15,6 +15,7 @@
 		BD4A9FE31BF29EA1004E6C15 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4A9FE21BF29EA1004E6C15 /* LoginViewController.swift */; };
 		BD4A9FE51BF2ACF0004E6C15 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD4A9FE41BF2ACF0004E6C15 /* MapViewController.swift */; };
 		BD5BC3311BF3D22500D08255 /* UdacityProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5BC3301BF3D22500D08255 /* UdacityProvider.swift */; };
+		BD6372D41BFD5BDD00791FE9 /* UdacityUserCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD6372D31BFD5BDD00791FE9 /* UdacityUserCredentials.swift */; };
 		BD788E911BF50D1A00736340 /* ParseProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E901BF50D1A00736340 /* ParseProvider.swift */; };
 		BD788E931BF50DA900736340 /* StudentLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E921BF50DA900736340 /* StudentLocation.swift */; };
 		BD788E961BF512C400736340 /* RESTApiHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD788E951BF512C400736340 /* RESTApiHelpers.swift */; };
@@ -34,6 +35,7 @@
 		BD4A9FE21BF29EA1004E6C15 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		BD4A9FE41BF2ACF0004E6C15 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		BD5BC3301BF3D22500D08255 /* UdacityProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityProvider.swift; sourceTree = "<group>"; };
+		BD6372D31BFD5BDD00791FE9 /* UdacityUserCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityUserCredentials.swift; sourceTree = "<group>"; };
 		BD788E901BF50D1A00736340 /* ParseProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseProvider.swift; sourceTree = "<group>"; };
 		BD788E921BF50DA900736340 /* StudentLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentLocation.swift; sourceTree = "<group>"; };
 		BD788E951BF512C400736340 /* RESTApiHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RESTApiHelpers.swift; sourceTree = "<group>"; };
@@ -91,6 +93,7 @@
 			children = (
 				BD788E921BF50DA900736340 /* StudentLocation.swift */,
 				BDF5CCD21BF65660000D443F /* StudentLocations.swift */,
+				BD6372D31BFD5BDD00791FE9 /* UdacityUserCredentials.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -163,6 +166,7 @@
 				TargetAttributes = {
 					BD4A9FCA1BF28F27004E6C15 = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 7K52CQ73P4;
 					};
 				};
 			};
@@ -209,6 +213,7 @@
 				BD4A9FE31BF29EA1004E6C15 /* LoginViewController.swift in Sources */,
 				BD4A9FE51BF2ACF0004E6C15 /* MapViewController.swift in Sources */,
 				BDF5CCD51BF6746F000D443F /* PinPostingViewController.swift in Sources */,
+				BD6372D41BFD5BDD00791FE9 /* UdacityUserCredentials.swift in Sources */,
 				BD788E911BF50D1A00736340 /* ParseProvider.swift in Sources */,
 				BD5BC3311BF3D22500D08255 /* UdacityProvider.swift in Sources */,
 				BD4A9FCF1BF28F27004E6C15 /* AppDelegate.swift in Sources */,
@@ -323,11 +328,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = OnTheMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jefenew.OnTheMap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -335,11 +343,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = OnTheMap/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jefenew.OnTheMap;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

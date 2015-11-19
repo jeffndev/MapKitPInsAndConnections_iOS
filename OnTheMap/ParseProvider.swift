@@ -37,7 +37,7 @@ class ParseProvider {
         return nil
     }
     
-    /*
+    /* JSON Sample...
     "results":[
     {
     "createdAt": "2015-02-25T01:10:38.103Z",

@@ -43,13 +43,12 @@ class LoginViewController: UIViewController {
     
     //MARK: Actions...
     @IBAction func udacitySignUpAction(sender: UIButton) {
-        
         if let udacitySignUpUrl = NSURL(string: UdacityProvider.SIGNUP_URL_STRING) {
             UIApplication.sharedApplication().openURL(udacitySignUpUrl)
         }
     }
     @IBAction func facebookSignInAction(sender: UIButton) {
-        
+        //TODO:
     }
     
     
@@ -66,25 +65,13 @@ class LoginViewController: UIViewController {
             return
         }
         passwordTextField.placeholder = oldPlaceholder
-        let provider = UdacityProvider()
-        provider.loginAction(emailText, password: passwordText) { (success, errMsg, handlerType) in
-            if success == true && provider.UserIDKey != nil {
-                let app = UIApplication.sharedApplication().delegate as! AppDelegate
-                //setup the App Global Session and User Id for this user...
-                app.UdacityUserId = provider.UserIDKey!
-                app.UdacitySessionId = provider.SessionID
-                //NOW send off, asynchronously, for more of the public data for user in future calls to Add data later on..
-                provider.fetchPublicUserInfo(provider.UserIDKey!) { (success, errMsg, handlerType) in
-                    app.UdacityUserFirstName = provider.UserFirstName
-                    app.UdacityUserLastName = provider.UserLastName
-                    app.Udacity_FacebookID = provider.UserFacebookId
-                }
-                //now Enter the app....
+        UdacityUserCredentials.sharedInstance.login(emailText, password: passwordText) { (success, errMsg, handlerType) in
+            if success {
                 dispatch_async(dispatch_get_main_queue()) {
                     let vc = self.storyboard!.instantiateViewControllerWithIdentifier("MainTabScreen") as! UITabBarController
                     self.presentViewController(vc, animated: true, completion: nil)
                 }
-            }else {
+            } else {
                 if let customErrorType = handlerType where [AppDelegate.ErrorsForUserFeedback.FAILED_NETWORK, AppDelegate.ErrorsForUserFeedback.AUTHENTICATION_EXCEPTION].contains(customErrorType){
                     dispatch_async(dispatch_get_main_queue()){
                         var shortMsg: String

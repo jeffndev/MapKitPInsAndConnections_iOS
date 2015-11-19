@@ -32,8 +32,8 @@ class StudentLocations {
         }
     }
     func checkForExistingLocationForStudent(atLocation: String? = nil ,completion: (success: Bool, firstObjectId: String?, errorMessage: String?, hasExisting: Bool?) -> Void) {
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
-        guard let uid = app.UdacityUserId else {
+        //let app = UIApplication.sharedApplication().delegate as! AppDelegate
+        guard let uid = UdacityUserCredentials.sharedInstance.UserId else {
             completion(success: false, firstObjectId: nil, errorMessage: "Could not find users UdacityUserId", hasExisting: nil)
             return
         }

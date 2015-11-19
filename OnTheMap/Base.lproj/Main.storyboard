@@ -215,7 +215,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="On The Map" id="r97-35-ReM">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="7hb-aw-gEb"/>
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="7hb-aw-gEb">
+                            <connections>
+                                <action selector="logoutAction:" destination="uDL-ec-AHP" id="xik-EU-mmF"/>
+                            </connections>
+                        </barButtonItem>
                         <rightBarButtonItems>
                             <barButtonItem systemItem="refresh" id="AE4-Jn-Osk">
                                 <connections>
@@ -305,7 +309,11 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" title="On The Map" id="h8t-sG-cz8">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="NPh-LJ-T2G"/>
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="NPh-LJ-T2G">
+                            <connections>
+                                <action selector="logoutAction:" destination="MaN-RR-l5e" id="p0E-ji-63q"/>
+                            </connections>
+                        </barButtonItem>
                         <rightBarButtonItems>
                             <barButtonItem systemItem="refresh" id="PNX-bc-eTs">
                                 <connections>

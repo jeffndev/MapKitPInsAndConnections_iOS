@@ -56,6 +56,13 @@ class StudentsTableViewController: UIViewController, UITableViewDataSource, UITa
 
     }
     
+    @IBAction func logoutAction(sender: UIBarButtonItem) {
+        //TODO:
+        //UdacityUserCredentials.deleteLoginSession()
+        //TODO: delete facebook login?
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(CELL_ID)!
         let locations = StudentLocations.sharedInstance.locations()

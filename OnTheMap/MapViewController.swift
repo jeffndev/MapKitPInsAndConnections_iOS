@@ -76,6 +76,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
 
     }
     
+    @IBAction func logoutAction(sender: UIBarButtonItem) {
+        //TODO:
+        //UdacityUserCredentials.deleteLoginSession()
+        //TODO: delete facebook login?
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
     @IBAction func addNewPinAction(sender: UIBarButtonItem) {
         let vc = storyboard?.instantiateViewControllerWithIdentifier("PinPostingViewController") as! PinPostingViewController
         presentViewController(vc, animated: true, completion: nil)

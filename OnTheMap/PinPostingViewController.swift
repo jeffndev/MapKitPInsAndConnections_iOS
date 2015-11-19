@@ -20,7 +20,6 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     @IBOutlet weak var mainMap: MKMapView!
     
     var tapRecognizer: UITapGestureRecognizer?
-    //var keyboardAdjusted = false
     
     let MAP_LOCAL_ZOOM_WIDTH = 2000.0
     
@@ -123,8 +122,7 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     
     func updateExistingLocation(objectId: String) {
         //by OBJECT ID..
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
-        guard let uid = app.UdacityUserId else {
+        guard let uid = UdacityUserCredentials.sharedInstance.UserId else {
             displayPinUploadAlertError()
             return
         }
@@ -139,8 +137,8 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
         location.longitude = Float(lon)
         location.mapString = locationEntryTextView.text
         location.mediaURL = mediaURLTextView.text
-        location.firstName = app.UdacityUserFirstName
-        location.lastName = app.UdacityUserLastName
+        location.firstName = UdacityUserCredentials.sharedInstance.UserFirstName
+        location.lastName = UdacityUserCredentials.sharedInstance.UserLastName
         StudentLocations.sharedInstance.updateLocation(location) { (success, errMessage) in
             if success {
                 dispatch_async(dispatch_get_main_queue(), { self.dismissViewControllerAnimated(true, completion: nil) })
@@ -153,8 +151,7 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     }
     
     func saveNewLocation() {
-        let app = UIApplication.sharedApplication().delegate as! AppDelegate
-        guard let uid = app.UdacityUserId else {
+        guard let uid = UdacityUserCredentials.sharedInstance.UserId else {
             displayPinUploadAlertError()
             return
         }
@@ -168,8 +165,8 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
         newLocation.longitude = Float(lon)
         newLocation.mapString = locationEntryTextView.text
         newLocation.mediaURL = mediaURLTextView.text
-        newLocation.firstName = app.UdacityUserFirstName
-        newLocation.lastName = app.UdacityUserLastName
+        newLocation.firstName = UdacityUserCredentials.sharedInstance.UserFirstName
+        newLocation.lastName = UdacityUserCredentials.sharedInstance.UserLastName
         StudentLocations.sharedInstance.addLocation(newLocation) { (success, errMessage) in
             if success {
                 dispatch_async(dispatch_get_main_queue(), { self.dismissViewControllerAnimated(true, completion: nil) })
@@ -211,31 +208,4 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     func handleSingleTap(recognizer: UITapGestureRecognizer) {
         view.endEditing(true)
     }
-//    func keyboardWillShow(notification: NSNotification) {
-//        if !keyboardAdjusted {
-//            self.view.superview?.frame.origin.y -= getKeyboardHeight(notification)/2
-//            keyboardAdjusted = true
-//        }
-//    }
-//    func keyboardWillHide(notification: NSNotification) {
-//        if keyboardAdjusted {
-//            self.view.superview?.frame.origin.y += getKeyboardHeight(notification)/2
-//            keyboardAdjusted = false
-//        }
-//    }
-//    func getKeyboardHeight(notification: NSNotification) -> CGFloat {
-//        let userInfo = notification.userInfo
-//        let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
-//        return keyboardSize.CGRectValue().height
-//    }
-//    
-//    func registerForKeyboardNotifications(){
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
-//    }
-//    func unregisterForKeyboardNotifications(){
-//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
-//        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
-//    }
-
 }
