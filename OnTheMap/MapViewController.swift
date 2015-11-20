@@ -77,9 +77,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, DataObserver {
     }
     
     @IBAction func logoutAction(sender: UIBarButtonItem) {
-        //TODO:
-        //UdacityUserCredentials.deleteLoginSession()
-        //TODO: delete facebook login?
+        UdacityUserCredentials.sharedInstance.logout() { (_,_,_) in }
         dismissViewControllerAnimated(true, completion: nil)
     }
     

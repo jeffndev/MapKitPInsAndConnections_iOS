@@ -32,12 +32,11 @@ class StudentLocations {
         }
     }
     func checkForExistingLocationForStudent(atLocation: String? = nil ,completion: (success: Bool, firstObjectId: String?, errorMessage: String?, hasExisting: Bool?) -> Void) {
-        //let app = UIApplication.sharedApplication().delegate as! AppDelegate
         guard let uid = UdacityUserCredentials.sharedInstance.UserId else {
             completion(success: false, firstObjectId: nil, errorMessage: "Could not find users UdacityUserId", hasExisting: nil)
             return
         }
-        //probably want to push this logic/syntax for building the where string into the Provider..
+        
         var extraParams: [String: String]
         if let mapString = atLocation {
             extraParams = [ParseProvider.ParameterKeys.WhereKey: "{\"uniqueKey\": \"\(uid)\", \"mapString\": \"\(mapString)\"}"]
@@ -78,7 +77,6 @@ class StudentLocations {
             if success {
                 newLocation.objectId = provider.currentLocationObjectId
                 newLocation.createdAt = provider.currentLocationCreatedAt
-                //TODO: deal with the updated item in the ui?? have to put in an update observer method..uh, maybe..
             }
             completion(success: success, errorMessage: errorMessage)
         }

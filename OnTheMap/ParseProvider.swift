@@ -32,10 +32,6 @@ class ParseProvider {
     var currentLocationCreatedAt: String?
     var currentLocationUpdatedAt: String?
     
-    func buildWhereQueryStringValue(whereClauses: [String: AnyObject]) ->String? {
-        //TODO:.. { "key": "val", "key": "val", ...}
-        return nil
-    }
     
     /* JSON Sample...
     "results":[
@@ -157,7 +153,7 @@ class ParseProvider {
         request.addValue(API_KEY, forHTTPHeaderField: "X-Parse-REST-API-Key")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.HTTPBody = buildPOSTLocationBody(newLocation).dataUsingEncoding(NSUTF8StringEncoding)
-        //print(buildPOSTLocationBody(newLocation))
+       
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             guard (error == nil) else {
@@ -188,7 +184,7 @@ class ParseProvider {
                 completion(success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
-            //print(parsedResult)
+            
             //now start parsing it out and get those locations!
             guard let objId = parsedResult["objectId"] as? String, let createdAt = parsedResult["createdAt"] as? String else {
                 completion(success: false, errorMessage: "could not parse out new objectId and create date", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
@@ -253,8 +249,8 @@ class ParseProvider {
                 completion(success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
-            //print(parsedResult)
-            //now start parsing it out and get those locations!
+            
+            //now start parsing it out 
             guard let updatedAt = parsedResult["updatedAt"] as? String else {
                 completion(success: false, errorMessage: "could not parse out new objectId and create date", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return

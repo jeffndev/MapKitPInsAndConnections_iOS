@@ -167,7 +167,7 @@ class UdacityProvider {
                 completion(success: false, errMsg: "Data could not be parsed as JSON", handleStatus: nil)
                 return
             }
-            print(parsedResult)
+            
             guard let userInfo = parsedResult["user"] as? [String: AnyObject] else {
                 completion(success: false, errMsg: "Could not parse out user information", handleStatus: nil)
                 return
@@ -198,6 +198,78 @@ class UdacityProvider {
     }
     
     func deleteLoginSession(completion: (success: Bool, errMsg: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void){
-        //TODO:
+        let LOGIN_SESSION_METHOD = "session"
+        
+        let requestString = UdacityProvider.BASE_API_URL_STRING + LOGIN_SESSION_METHOD
+        guard let requestUrl = NSURL(string: requestString) else {
+            completion(success: false, errMsg: "could not parse a URL from \(requestString)", handleStatus: nil)
+            return
+        }
+        let request = NSMutableURLRequest(URL: requestUrl)
+        request.HTTPMethod = "DELETE"
+        var xsrfCookie: NSHTTPCookie? = nil
+        let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        guard let cookies = sharedCookieStorage.cookies else {
+            completion(success: false, errMsg: "Could not find the session cookie to logout of", handleStatus: nil)
+            return
+        }
+        for cookie in cookies  {
+            if cookie.name == "XSRF-TOKEN" { xsrfCookie = cookie }
+        }
+        if let xsrfCookie = xsrfCookie {
+            request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-XSRF-TOKEN")
+        }
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { (data, response, error) in
+            
+            guard (error == nil) else {
+                completion(success: false, errMsg: "There was an error with your request: \(error)", handleStatus: nil)
+                return
+            }
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                if let response = response as? NSHTTPURLResponse {
+                    if(response.statusCode == 403){
+                        completion(success: false, errMsg: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: nil)
+                    }else {
+                        completion(success: false, errMsg: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: nil)
+                    }
+                } else if let response = response {
+                    completion(success: false, errMsg: "Your request returned an invalid response! Response: \(response)!", handleStatus: nil)
+                } else {
+                    completion(success: false, errMsg: "Your request returned an invalid response!", handleStatus: nil)
+                }
+                return
+            }
+            
+            guard let data = data else {
+                completion(success: false, errMsg: "data from JSON request came up empty", handleStatus: nil)
+                return
+            }
+            let trimmedData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+            
+            var parsedResult: AnyObject!
+            do {
+                parsedResult = try NSJSONSerialization.JSONObjectWithData(trimmedData, options: .AllowFragments)
+            } catch {
+                completion(success: false, errMsg: "Data could not be parsed as JSON", handleStatus: nil)
+                return
+            }
+            
+            guard let accountInfo = parsedResult["session"] as? [String: AnyObject] else {
+                completion(success: false, errMsg: "could not find session information in JSON response", handleStatus: nil)
+                return
+            }
+            guard let _ = accountInfo["id"] as? String else {
+                completion(success: false, errMsg: "could not find valid sessionId in JSON response", handleStatus: nil)
+                return
+            }
+            guard let _ = accountInfo["expiration"] as? String else {
+                completion(success: false, errMsg: "Could not find expiration date-time", handleStatus: nil)
+                return
+            }
+            completion(success: true, errMsg: nil, handleStatus: nil)
+        }
+        
+        task.resume()
     }
 }

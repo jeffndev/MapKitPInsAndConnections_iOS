@@ -21,6 +21,8 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     
     //MARK: Lifecycle overrides..
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         let leftSpacerFrame = CGRectMake(0.0, 0.0, 13.0, 0.0)
         emailTextField.leftView = UIView(frame: leftSpacerFrame)
         emailTextField.leftViewMode = .Always
@@ -32,6 +34,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         
         //setup facebook login button...
         let fbookLogin = FBSDKLoginButton()
+    
         fbookLogin.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(fbookLogin)
         let alignLeadingToLoginBtn = NSLayoutConstraint(item: fbookLogin, attribute: .Leading, relatedBy: .Equal, toItem: udacityLoginButton, attribute: .Leading, multiplier: 1.0, constant: 0.0)
@@ -48,6 +51,14 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         super.viewWillAppear(animated)
         view.addGestureRecognizer(tapRecognizer!)
         registerForKeyboardNotifications()
+    }
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if let token = FBSDKAccessToken.currentAccessToken() {
+            if let tokenString = token.tokenString {
+                udacityLoginWithFacebookToken(tokenString)
+            }
+        }
     }
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -103,14 +114,26 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
     //FacebookLogin Delegates
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
         //print(FBSDKSettings.sdkVersion())
-        guard let token = FBSDKAccessToken.currentAccessToken() else {
+        guard let token = FBSDKAccessToken.currentAccessToken() where token.tokenString != nil else {
             let alert = UIAlertController(title: "Facebook Login Alert", message: "Could not authenticate with Facebook.", preferredStyle: .Alert)
             let okAction = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
             alert.addAction(okAction)
             self.presentViewController(alert, animated: true, completion: nil)
             return
         }
-        UdacityUserCredentials.sharedInstance.facebookLogin(token.tokenString) { (success, errMsg, handlerType) in
+        udacityLoginWithFacebookToken(token.tokenString)
+    }
+    
+    func loginButtonWillLogin(loginButton: FBSDKLoginButton!) -> Bool {
+        return true
+    }
+    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+        //empty
+    }
+    
+    //MARK: helper functions
+    func udacityLoginWithFacebookToken(fbookToken: String) {
+        UdacityUserCredentials.sharedInstance.facebookLogin(fbookToken) { (success, errMsg, handlerType) in
             if success {
                 dispatch_async(dispatch_get_main_queue()) {
                     let vc = self.storyboard!.instantiateViewControllerWithIdentifier("MainTabScreen") as! UITabBarController
@@ -135,14 +158,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         }
 
     }
-    func loginButtonWillLogin(loginButton: FBSDKLoginButton!) -> Bool {
-        return true
-    }
-    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
-        //empty
-    }
     
-    //MARK: helper functions
     func handleSingleTap(recognizer: UITapGestureRecognizer) {
         view.endEditing(true)
     }

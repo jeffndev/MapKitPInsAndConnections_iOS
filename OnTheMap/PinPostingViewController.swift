@@ -51,13 +51,11 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
         findPinView.hidden = false
         submitPinView.hidden = true
         view.addGestureRecognizer(tapRecognizer!)
-        //registerForKeyboardNotifications()
     }
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         view.removeGestureRecognizer(tapRecognizer!)
-        //unregisterForKeyboardNotifications()
     }
 
    

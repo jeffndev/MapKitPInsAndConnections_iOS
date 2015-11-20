@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FBSDKLoginKit
 
 class UdacityUserCredentials {
     static let sharedInstance = UdacityUserCredentials()
@@ -16,6 +17,13 @@ class UdacityUserCredentials {
     var UserFirstName: String?
     var UserLastName: String?
     var FacebookConnectID: String?
+    
+    func logout(completion: (success: Bool, errMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) ->Void) {
+        let provider = UdacityProvider()
+        provider.deleteLoginSession(completion)
+        let fb = FBSDKLoginManager()
+        fb.logOut()
+    }
     
     func login(email: String, password: String, completion: (success: Bool, errMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) ->Void) {
         let provider = UdacityProvider()
