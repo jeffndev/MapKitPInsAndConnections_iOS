@@ -11,7 +11,6 @@ import MapKit
 
 class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewDelegate {
     
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var submitPinView: UIView!
     @IBOutlet weak var findPinView: UIView!
     
@@ -19,6 +18,7 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     @IBOutlet weak var locationEntryTextView: UITextView!
     @IBOutlet weak var mainMap: MKMapView!
     
+    var myActivityView: UIActivityIndicatorView?
     var tapRecognizer: UITapGestureRecognizer?
     
     let MAP_LOCAL_ZOOM_WIDTH = 2000.0
@@ -28,7 +28,7 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
     var currentPinLatitude: CLLocationDegrees?
     var currentPinLongitude: CLLocationDegrees?
     
-    
+    //MARK: Lifecycle overrides
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,29 +44,31 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
         //
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
         tapRecognizer?.numberOfTapsRequired = 1
-        
     }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         findPinView.hidden = false
         submitPinView.hidden = true
         view.addGestureRecognizer(tapRecognizer!)
     }
-
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         view.removeGestureRecognizer(tapRecognizer!)
     }
 
-   
+   //MARK: Action methods
     @IBAction func findOnTheMap() {
-        
-        activityIndicator.startAnimating()
+        showActivityIndicator()
         
         let geoText = locationEntryTextView.text
         let g = CLGeocoder()
         g.geocodeAddressString(geoText) { (placemarks, error) in
-            self.activityIndicator.stopAnimating()
+            self.stopActivityIndicator()
             if error == nil {
                 if placemarks!.count > 0 {
                     let place = placemarks![0]
@@ -118,6 +120,26 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
         }
     }
     
+    @IBAction func cancelAction(sender: UIButton) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
+    //Mark: UITextViewDelegates
+    func textViewDidBeginEditing(textView: UITextView) {
+        if textView.textColor == UIColor.lightGrayColor() {
+            textView.text = nil
+            textView.textColor = UIColor.whiteColor()
+        }
+    }
+    func textViewDidEndEditing(textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = placeholderTextMap[textView.tag]
+            textView.textColor = UIColor.lightGrayColor()
+        }
+    }
+    
+    //MARK: Helper Methods..Data Handling
     func updateExistingLocation(objectId: String) {
         //by OBJECT ID..
         guard let uid = UdacityUserCredentials.sharedInstance.UserId else {
@@ -144,7 +166,7 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
                 dispatch_async(dispatch_get_main_queue(), { self.displayPinUploadAlertError() })
             }
         }
-
+        
         
     }
     
@@ -175,27 +197,21 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
         
     }
     
-    @IBAction func cancelAction(sender: UIButton) {
-        dismissViewControllerAnimated(true, completion: nil)
+    
+    //MARK: helper methods - UI
+    func showActivityIndicator() {
+        if myActivityView == nil {
+            myActivityView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+            view.addSubview(myActivityView!)
+            myActivityView?.center = view.center
+        }
+        myActivityView?.startAnimating()
     }
-    
-    
-    //Mark: UITextViewDelegates
-    func textViewDidBeginEditing(textView: UITextView) {
-        if textView.textColor == UIColor.lightGrayColor() {
-            textView.text = nil
-            textView.textColor = UIColor.whiteColor()
+    func stopActivityIndicator() {
+        if let activity = myActivityView {
+            activity.stopAnimating()
         }
     }
-    func textViewDidEndEditing(textView: UITextView) {
-        if textView.text.isEmpty {
-            textView.text = placeholderTextMap[textView.tag]
-            textView.textColor = UIColor.lightGrayColor()
-        }
-    }
-    
-    
-    //MARK: helper methods
     func displayPinUploadAlertError() {
         let alert = UIAlertController()
         let okAction = UIAlertAction(title: "New Location Could Not Be Saved", style: .Default, handler: nil)

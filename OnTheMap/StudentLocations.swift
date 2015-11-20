@@ -22,10 +22,10 @@ class StudentLocations {
     func fetchLocations(completion: (success:Bool) -> Void) {
         //an async task
         let provider = ParseProvider()
-        provider.fetchStudentLocations(){ (success, errorMessage, handlerType) in
+        provider.fetchStudentLocations(){ (newLocations, success, errorMessage, handlerType) in
             if success {
                 self.mLocations.removeAll()
-                self.mLocations.appendContentsOf(provider.locations)
+                self.mLocations.appendContentsOf(newLocations)
                 for o in self.observers { o.refresh() }
             }
             completion(success: success)
@@ -44,9 +44,13 @@ class StudentLocations {
             extraParams = [ParseProvider.ParameterKeys.WhereKey: "{\"uniqueKey\": \"\(uid)\"}"]
         }
         let provider = ParseProvider()
-        provider.fetchStudentLocations(1, optionalParams: extraParams) { (success, errorMessage, handleStatus) in
+        provider.fetchStudentLocations(1, optionalParams: extraParams) { (foundLocations, success, errorMessage, handleStatus) in
             if success {
-                completion(success: success, firstObjectId: provider.currentLocationObjectId, errorMessage: nil, hasExisting: !provider.locations.isEmpty)
+                var firstFoundObjectId: String? = nil
+                if !foundLocations.isEmpty {
+                    firstFoundObjectId = foundLocations[0].objectId
+                }
+                completion(success: success, firstObjectId: firstFoundObjectId, errorMessage: nil, hasExisting: !foundLocations.isEmpty)
             } else {
                 completion(success: success, firstObjectId: nil, errorMessage: errorMessage, hasExisting: nil)
             }
@@ -54,16 +58,13 @@ class StudentLocations {
     }
     
     func addLocation(newLoc: StudentLocation, completion: (success: Bool, errorMessage: String?) -> Void) {
-        var newLocation = newLoc
         let provider = ParseProvider()
-        provider.addLocation(newLocation) { (success, errorMessage, handleType) in
-            if success {
-                newLocation.objectId = provider.currentLocationObjectId
-                newLocation.createdAt = provider.currentLocationCreatedAt
+        provider.addLocation(newLoc) { (returnedLocation, success, errorMessage, handleType) in
+            if success && returnedLocation != nil{
                 //put it at the begining, newest data...
-                self.mLocations.insert(newLocation, atIndex: 0)
+                self.mLocations.insert(returnedLocation!, atIndex: 0)
                 let indexPath = NSIndexPath(forRow: 0, inSection: 0)
-                for o in self.observers { o.add(newLocation, indexPath: indexPath) }
+                for o in self.observers { o.add(returnedLocation!, indexPath: indexPath) }
                 completion(success: true, errorMessage: nil)
             } else {
                 completion(success: false, errorMessage: errorMessage)
@@ -71,13 +72,8 @@ class StudentLocations {
         }
     }
     func updateLocation(newLoc: StudentLocation, completion: (success: Bool, errorMessage: String?) -> Void) {
-        var newLocation = newLoc
         let provider = ParseProvider()
-        provider.updateLocation(newLocation) { (success, errorMessage, handleType) in
-            if success {
-                newLocation.objectId = provider.currentLocationObjectId
-                newLocation.createdAt = provider.currentLocationCreatedAt
-            }
+        provider.updateLocation(newLoc) { (updatedLocation, success, errorMessage, handleType) in
             completion(success: success, errorMessage: errorMessage)
         }
     }

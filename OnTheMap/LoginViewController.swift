@@ -32,19 +32,7 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
         tapRecognizer = UITapGestureRecognizer(target: self, action: "handleSingleTap:")
         tapRecognizer?.numberOfTapsRequired = 1
         
-        //setup facebook login button...
-        let fbookLogin = FBSDKLoginButton()
-    
-        fbookLogin.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(fbookLogin)
-        let alignLeadingToLoginBtn = NSLayoutConstraint(item: fbookLogin, attribute: .Leading, relatedBy: .Equal, toItem: udacityLoginButton, attribute: .Leading, multiplier: 1.0, constant: 0.0)
-        let alignTrailingToLoginBtn = NSLayoutConstraint(item: fbookLogin, attribute: .Trailing, relatedBy: .Equal, toItem: udacityLoginButton, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
-        let pinToBottonLayout = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: fbookLogin , attribute: .BottomMargin, multiplier: 1.0, constant: 26.0)
-        let btnHeight = NSLayoutConstraint(item: fbookLogin, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 40.0)
-        
-        fbookLogin.readPermissions = ["public_profile", "email", "user_friends"]
-        fbookLogin.delegate = self
-        NSLayoutConstraint.activateConstraints([alignLeadingToLoginBtn, alignTrailingToLoginBtn, pinToBottonLayout, btnHeight])
+        setupFacebookLoginButton()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -157,6 +145,22 @@ class LoginViewController: UIViewController, FBSDKLoginButtonDelegate {
             }
         }
 
+    }
+    //MARK: Helper methods UI
+    func setupFacebookLoginButton() {
+        //setup facebook login button...
+        let fbookLogin = FBSDKLoginButton()
+        
+        fbookLogin.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(fbookLogin)
+        let alignLeadingToLoginBtn = NSLayoutConstraint(item: fbookLogin, attribute: .Leading, relatedBy: .Equal, toItem: udacityLoginButton, attribute: .Leading, multiplier: 1.0, constant: 0.0)
+        let alignTrailingToLoginBtn = NSLayoutConstraint(item: fbookLogin, attribute: .Trailing, relatedBy: .Equal, toItem: udacityLoginButton, attribute: .Trailing, multiplier: 1.0, constant: 0.0)
+        let pinToBottonLayout = NSLayoutConstraint(item: view, attribute: .Bottom, relatedBy: .Equal, toItem: fbookLogin , attribute: .BottomMargin, multiplier: 1.0, constant: 26.0)
+        let btnHeight = NSLayoutConstraint(item: fbookLogin, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 40.0)
+        
+        fbookLogin.readPermissions = ["public_profile", "email", "user_friends"]
+        fbookLogin.delegate = self
+        NSLayoutConstraint.activateConstraints([alignLeadingToLoginBtn, alignTrailingToLoginBtn, pinToBottonLayout, btnHeight])
     }
     
     func handleSingleTap(recognizer: UITapGestureRecognizer) {

@@ -27,11 +27,6 @@ class ParseProvider {
     let API_KEY = "QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY"
     let BASE_API_URL_STRING = "https://api.parse.com/1/classes/"
     
-    var locations = [StudentLocation]()
-    var currentLocationObjectId: String?
-    var currentLocationCreatedAt: String?
-    var currentLocationUpdatedAt: String?
-    
     
     /* JSON Sample...
     "results":[
@@ -61,8 +56,9 @@ class ParseProvider {
     },
     */
 
-    func fetchStudentLocations(limitNumRecords: Int = 100, optionalParams: [String: AnyObject]? = nil, completion: (success: Bool, errorMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?)-> Void) {
+    func fetchStudentLocations(limitNumRecords: Int = 100, optionalParams: [String: AnyObject]? = nil, completion: (newLocations: [StudentLocation],success: Bool, errorMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?)-> Void) {
         
+        var returnLocations = [StudentLocation]()
         let STUDENT_LOCATIONS_METHOD = "StudentLocation"
         var restParams: [String: AnyObject] = [ParameterKeys.LimitKey: limitNumRecords,
                                                ParameterKeys.OrderKey: "-updatedAt"]
@@ -75,7 +71,7 @@ class ParseProvider {
         
         guard let requestUrl = NSURL(string: requestString) else {
             print("could not build url from \(requestString)")
-            completion(success: false, errorMessage: "could not build url from \(requestString)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+            completion(newLocations: returnLocations, success: false, errorMessage: "could not build url from \(requestString)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
             return
         }
         let request = NSMutableURLRequest(URL: requestUrl)
@@ -85,23 +81,23 @@ class ParseProvider {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             guard (error == nil) else {
-                completion(success: false, errorMessage: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                completion(newLocations: returnLocations, success: false, errorMessage: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if let response = response as? NSHTTPURLResponse {
-                    completion(success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                    completion(newLocations: returnLocations, success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 } else if let response = response {
-                    completion(success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                    completion(newLocations: returnLocations, success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 } else {
-                    completion(success: false, errorMessage: "Your request returned an invalid response!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                    completion(newLocations: returnLocations, success: false, errorMessage: "Your request returned an invalid response!", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 }
                 return
             }
             
             guard let data = data else {
-                completion(success: false, errorMessage: "Request data returned empty", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                completion(newLocations: returnLocations, success: false, errorMessage: "Request data returned empty", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 return
             }
             
@@ -109,23 +105,19 @@ class ParseProvider {
             do {
                 parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
             } catch {
-                completion(success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                completion(newLocations: returnLocations, success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 return
             }
             //now start parsing it out and get those locations!
             guard let locationObjects = parsedResult["results"] as? [[String: AnyObject]] else {
-                completion(success: false, errorMessage: "Could not parse the Results from the JSON returned", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
+                completion(newLocations: returnLocations, success: false, errorMessage: "Could not parse the Results from the JSON returned", handleStatus: AppDelegate.ErrorsForUserFeedback.LOCATIONS_DLOAD_FAILURE)
                 return
             }
             
             for loc in locationObjects {
-                self.locations.append(StudentLocation(json: loc))
+                returnLocations.append(StudentLocation(json: loc))
             }
-            if !self.locations.isEmpty {
-                //the First Object Id
-                self.currentLocationObjectId = self.locations[0].objectId
-            }
-            completion(success: true, errorMessage: nil, handleStatus: nil)
+            completion(newLocations: returnLocations, success: true, errorMessage: nil, handleStatus: nil)
         }
         task.resume()
     }
@@ -138,13 +130,14 @@ class ParseProvider {
         return "{\"uniqueKey\": \"\(uid)\", \"firstName\": \"\(location.firstName ?? "")\", \"lastName\": \"\(location.lastName ?? "")\",\"mapString\": \"\(location.mapString ?? "")\", \"mediaURL\": \"\(location.mediaURL ?? "")\",\"latitude\": \(lat), \"longitude\": \(lon) }"
     }
     
-    func addLocation(newLocation: StudentLocation, completion: (success: Bool, errorMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
+    func addLocation(newLocation: StudentLocation, completion: (returnedLocation: StudentLocation?, success: Bool, errorMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
         let STUDENT_LOCATIONS_METHOD = "StudentLocation"
         let requestString: String = BASE_API_URL_STRING + STUDENT_LOCATIONS_METHOD
         
         guard let requestUrl = NSURL(string: requestString) else {
             print("could not build url from \(requestString)")
-            completion(success: false, errorMessage: "could not build url from \(requestString)", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+            
+            completion(returnedLocation: nil, success: false, errorMessage: "could not build url from \(requestString)", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
             return
         }
         let request = NSMutableURLRequest(URL: requestUrl)
@@ -157,23 +150,23 @@ class ParseProvider {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             guard (error == nil) else {
-                completion(success: false, errorMessage: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                completion(returnedLocation: nil, success: false, errorMessage: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if let response = response as? NSHTTPURLResponse {
-                    completion(success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!",  handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                    completion(returnedLocation: nil, success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!",  handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 } else if let response = response {
-                    completion(success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                    completion(returnedLocation: nil, success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 } else {
-                    completion(success: false, errorMessage: "Your request returned an invalid response!", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                    completion(returnedLocation: nil,success: false, errorMessage: "Your request returned an invalid response!", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 }
                 return
             }
             
             guard let data = data else {
-                completion(success: false, errorMessage: "Request data returned empty", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                completion(returnedLocation: nil, success: false, errorMessage: "Request data returned empty", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
             
@@ -181,25 +174,26 @@ class ParseProvider {
             do {
                 parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
             } catch {
-                completion(success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                completion(returnedLocation: nil, success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
             
-            //now start parsing it out and get those locations!
+            //now start parsing it out 
             guard let objId = parsedResult["objectId"] as? String, let createdAt = parsedResult["createdAt"] as? String else {
-                completion(success: false, errorMessage: "could not parse out new objectId and create date", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                completion(returnedLocation: nil, success: false, errorMessage: "could not parse out new objectId and create date", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
-            self.currentLocationObjectId = objId
-            self.currentLocationCreatedAt = createdAt
-            completion(success: true, errorMessage: nil, handleStatus: nil)
+            var savedNewLocation = newLocation
+            savedNewLocation.objectId = objId
+            savedNewLocation.createdAt = createdAt
+            completion(returnedLocation: savedNewLocation, success: true, errorMessage: nil, handleStatus: nil)
         }
         task.resume()
     }
     
-    func updateLocation(location: StudentLocation, completion: (success: Bool, errorMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
+    func updateLocation(location: StudentLocation, completion: (updatedLocation: StudentLocation?, success: Bool, errorMessage: String?, handleStatus: AppDelegate.ErrorsForUserFeedback?) -> Void) {
         guard let objId = location.objectId else {
-            completion(success: false, errorMessage: "no ObjectId to update", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+            completion(updatedLocation: nil, success: false, errorMessage: "no ObjectId to update", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
             return
         }
         let STUDENT_LOCATIONS_METHOD = "StudentLocation/\(objId)"
@@ -207,7 +201,7 @@ class ParseProvider {
         
         guard let requestUrl = NSURL(string: requestString) else {
             print("could not build url from \(requestString)")
-            completion(success: false, errorMessage: "could not build url from \(requestString)", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+            completion(updatedLocation: nil, success: false, errorMessage: "could not build url from \(requestString)", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
             return
         }
         let request = NSMutableURLRequest(URL: requestUrl)
@@ -222,23 +216,23 @@ class ParseProvider {
         
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             guard (error == nil) else {
-                completion(success: false, errorMessage: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                completion(updatedLocation: nil, success: false, errorMessage: "There was an error with your request: \(error)", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if let response = response as? NSHTTPURLResponse {
-                    completion(success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!",  handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                    completion(updatedLocation: nil, success: false, errorMessage: "Your request returned an invalid response! Status code: \(response.statusCode)!",  handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 } else if let response = response {
-                    completion(success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                    completion(updatedLocation: nil, success: false, errorMessage: "Your request returned an invalid response! Response: \(response)!", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 } else {
-                    completion(success: false, errorMessage: "Your request returned an invalid response!", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                    completion(updatedLocation: nil, success: false, errorMessage: "Your request returned an invalid response!", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 }
                 return
             }
             
             guard let data = data else {
-                completion(success: false, errorMessage: "Request data returned empty", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                completion(updatedLocation: nil, success: false, errorMessage: "Request data returned empty", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
             
@@ -246,17 +240,19 @@ class ParseProvider {
             do {
                 parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
             } catch {
-                completion(success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                completion(updatedLocation: nil, success: false, errorMessage: "could not parse data as JSON", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
             
             //now start parsing it out 
             guard let updatedAt = parsedResult["updatedAt"] as? String else {
-                completion(success: false, errorMessage: "could not parse out new objectId and create date", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
+                completion(updatedLocation: nil, success: false, errorMessage: "could not parse out new objectId and create date", handleStatus: AppDelegate.ErrorsForUserFeedback.POST_PIN_FAILURE)
                 return
             }
-            self.currentLocationUpdatedAt = updatedAt
-            completion(success: true, errorMessage: nil, handleStatus: nil)
+            //self.currentLocationUpdatedAt = updatedAt
+            var updateLoc = location
+            updateLoc.updatedAt = updatedAt
+            completion(updatedLocation: updateLoc, success: true, errorMessage: nil, handleStatus: nil)
         }
         task.resume()
     }
