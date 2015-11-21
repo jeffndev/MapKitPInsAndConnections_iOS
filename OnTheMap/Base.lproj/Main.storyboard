@@ -235,7 +235,7 @@
                         <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="45" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="dZJ-iG-dam">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="45" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="dZJ-iG-dam">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
                                 <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -244,7 +244,7 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="6uZ-r9-jUS" id="sL3-ic-vql">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="F1R-kk-Qqq">
@@ -272,6 +272,8 @@
                                             <animations/>
                                         </tableViewCellContentView>
                                         <animations/>
+                                        <color key="backgroundColor" red="0.79098156827346167" green="0.96203496590671911" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="tintColor" red="0.98431372549019602" green="0.16862745098039217" blue="0.16470588235294117" alpha="1" colorSpace="calibratedRGB"/>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>

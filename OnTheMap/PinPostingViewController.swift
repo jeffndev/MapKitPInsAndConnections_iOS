@@ -204,12 +204,14 @@ class PinPostingViewController: UIViewController, MKMapViewDelegate, UITextViewD
             myActivityView = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
             view.addSubview(myActivityView!)
             myActivityView?.center = view.center
+            view.alpha = 0.5
         }
         myActivityView?.startAnimating()
     }
     func stopActivityIndicator() {
         if let activity = myActivityView {
             activity.stopAnimating()
+            view.alpha = 1.0
         }
     }
     func displayPinUploadAlertError() {
